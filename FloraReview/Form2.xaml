@@ -1,0 +1,102 @@
+﻿<Window x:Name="GridView" x:Class="FloraReview.Form2"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Data Viewer" Height="800" Width="1500"
+        Style="{StaticResource MaterialDesignWindow}">
+    <Window.Resources>
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="WhiteSmoke"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="10,5,10,5"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesignDivider}"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+        </Style>
+    </Window.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Name="rowCountLabel" Content="Total rows loaded is: 1" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" />
+            <Label Grid.Column="1" Name="pageNumberLabel" Content="Page 1 of 1 pages" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center"  />
+            
+            <!--<ToolBar Grid.Column="2" HorizontalAlignment="Right" >-->
+            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" >
+                <Button x:Name="PreviousPageButton" Click="PreviousPage_Click">
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,5,0">
+                        <materialDesign:PackIcon Kind="ChevronLeft" />
+                        <TextBlock Text="Previous" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <Button  x:Name="NextPageButton" Click="NextPage_Click" Margin="5,0,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="ChevronRight" />
+                        <TextBlock Text="Next" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+            <!--</ToolBar>-->
+
+        </Grid>
+        <DataGrid Name="dataGrid" Grid.Row="1" AutoGenerateColumns="True"
+                      HorizontalAlignment="Stretch"
+                      MouseDoubleClick="dataGrid_MouseDoubleClick"
+                      SelectionChanged="dataGrid_SelectionChanged"
+                      MaxColumnWidth="400" MinColumnWidth="70" RowDetailsVisibilityMode="Collapsed" IsReadOnly="True" >
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Select all" Click="SelectAll_Click"/>
+                    <Separator/>
+                    <MenuItem x:Name="reviewMenuItem" Header="Review" Click="Review_Click" IsEnabled="False"/>
+                    <MenuItem x:Name="exportMenuItem" Header="Export" Click="Export_Click" IsEnabled="False"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+        </DataGrid>
+
+        <!--<ToolBar Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" >-->
+        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Right" >
+            <Button  Click="ExportCsv_Click" Margin="0,0,5,0">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="FileExport" />
+                    <TextBlock Text="Export" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+
+            <Button  Click="Refresh_Click" Margin="0,0,5,0" >
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Refresh" />
+                    <TextBlock Text="Refresh" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+
+            <Button  Click="Close_Click" HorizontalAlignment="Stretch" Margin="50,0,0,0">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Close" />
+                    <TextBlock Text="Close" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+        <!--</ToolBar>-->
+
+        <Border Grid.Row="3" >
+            <Border.Background>
+                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.InfoColorKey}}"/>
+            </Border.Background>
+            <Label x:Name="Info" Content="Double click on a row to edit, or select rows and right-click -> Review."  />
+        </Border>
+    </Grid>
+</Window>
+

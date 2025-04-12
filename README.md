@@ -1,0 +1,2 @@
+Application to open SQLite3 database, select some entries, display original text and modified text for editing and approval.
+The selected entries can then be exported to a csv file using '\t' as delimiter.
