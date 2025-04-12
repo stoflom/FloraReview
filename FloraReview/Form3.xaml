@@ -31,14 +31,14 @@
             <TextBlock Name="scientificNameTextBlock" FontSize="12" FontWeight="Bold" Margin="0,5,0,5"/>
         </StackPanel>
 
-            <ScrollViewer Grid.Row="0" Grid.Column="1" Height="95" Margin="0,0,20,0">
-                <TextBlock Name="logTextBlock" FontSize="12" FontWeight="Bold" Margin="0,5,0,0" TextWrapping="Wrap"/>
-            </ScrollViewer>
+        <ScrollViewer Grid.Row="0" Grid.Column="1" Height="95" Margin="0,0,20,0">
+            <TextBlock Name="logTextBlock" FontSize="12" FontWeight="Bold" Margin="0,5,0,0" TextWrapping="Wrap"/>
+        </ScrollViewer>
 
 
         <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,5,0,10" Orientation="Horizontal">
             <Label x:Name="SelectedRowLabel" Content="Row 1 of 1" FontSize="12" FontWeight="SemiBold" Margin="0,5,0,0" VerticalAlignment="Center"/>
-      
+
             <!--<ToolBar  HorizontalAlignment="Left">-->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0" >
                 <Button x:Name="BackButton" Click="Back_Click" Margin="0,0,5,0">
@@ -99,7 +99,14 @@
                MinHeight="50" 
                IsReadOnly="True" VerticalScrollBarVisibility="Auto"
                Background="WhiteSmoke"  AllowDrop="False"  IsTabStop="True" MouseWheel="modifiedRichTextBox_MouseWheel" VerticalContentAlignment="Top" ScrollViewer.CanContentScroll="True" 
-               />
+               >
+                <RichTextBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="ApplicationCommands.SelectAll" />
+                        <MenuItem Command="ApplicationCommands.Copy" />
+                    </ContextMenu>
+                </RichTextBox.ContextMenu>
+            </RichTextBox>
         </Grid>
 
         <GridSplitter Grid.Row="5" Height="5" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"  Grid.ColumnSpan="3" VerticalContentAlignment="Center"/>
@@ -148,7 +155,7 @@
                 </RichTextBox.ContextMenu>
             </RichTextBox>
         </Grid>
-        
+
         <!--<ToolBar  Grid.Row ="7" Grid.Column="0"  HorizontalAlignment="Left" Grid.ColumnSpan="2">-->
         <StackPanel Grid.Row ="7" Grid.Column="0"  HorizontalAlignment="Left" Grid.ColumnSpan="2" Orientation="Horizontal">
             <Button x:Name="UndoButton"  Click="Undo_Click">

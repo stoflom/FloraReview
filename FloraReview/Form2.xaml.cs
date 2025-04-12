@@ -293,7 +293,7 @@ namespace FloraReview
 
         private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            exportMenuItem.IsEnabled = reviewMenuItem.IsEnabled = dataGrid.SelectedItems.Count > 0;
+            ReviewButton.IsEnabled = ExportButton.IsEnabled = exportMenuItem.IsEnabled = reviewMenuItem.IsEnabled = dataGrid.SelectedItems.Count > 0;
         }
 
         private void SelectAll_Click(object sender, RoutedEventArgs e)
