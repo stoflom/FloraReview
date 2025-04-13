@@ -189,7 +189,7 @@
         "ProductVersion" = "8:1.0.0"
         "Manufacturer" = "8:FloraReview"
         "ARPHELPTELEPHONE" = "8:"
-        "ARPHELPLINK" = "8:github/stoflom/FloraReview"
+        "ARPHELPLINK" = "8:https://github.com/stoflom/FloraReview"
         "Title" = "8:FloraReview"
         "Subject" = "8:"
         "ARPCONTACT" = "8:CLombard"
@@ -756,7 +756,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F48039CDAE3944A0A96A195A292FB75E"
             {
-            "SourcePath" = "8:..\\FloraReview\\obj\\x64\\Release\\net8.0-windows\\FloraReview.dll"
+            "SourcePath" = "8:..\\FloraReview\\obj\\Release\\net8.0-windows\\FloraReview.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_35D6990F76F14D8C93E0103D167F6981"
@@ -784,7 +784,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_FADD55EBCB4C42559AFAEAC22EC25428"
             {
-            "SourcePath" = "8:..\\FloraReview\\obj\\x64\\Release\\net8.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\FloraReview\\obj\\Release\\net8.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_35D6990F76F14D8C93E0103D167F6981"
