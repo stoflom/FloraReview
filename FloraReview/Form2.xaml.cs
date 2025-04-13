@@ -130,6 +130,7 @@ namespace FloraReview
         {
             NextPageButton.IsEnabled = pageIndex + 1 < totalPages;
             PreviousPageButton.IsEnabled = pageIndex > 0;
+            ExportButton.IsEnabled = dataGrid.Items.Count > 0;
         }
 
 
@@ -183,7 +184,7 @@ namespace FloraReview
             }
         }
 
-        private void ExportCsv_Click(object sender, RoutedEventArgs e)
+        private void ExportQuery_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -196,7 +197,7 @@ namespace FloraReview
                         AddParameters(adapter.SelectCommand);
                         DataTable dataTable = new();
                         adapter.Fill(dataTable);
-                        exportRows(dataTable);
+                        exportSelectedRows(dataTable);
                     }
 
                 }
@@ -208,7 +209,7 @@ namespace FloraReview
         }
 
 
-        private int exportRows(DataTable dataTable)
+        private int exportSelectedRows(DataTable dataTable)
         {
             if (MessageBox.Show($"{dataTable.Rows.Count} will be exported to a csv file", "Export?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
@@ -288,7 +289,7 @@ namespace FloraReview
 
         private void dataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            Review_Click(sender, e);
+            ReviewSelectedRows_Click(sender, e);
         }
 
         private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -301,7 +302,7 @@ namespace FloraReview
             dataGrid.SelectAll();
         }
 
-        private void Review_Click(object sender, RoutedEventArgs e)
+        private void ReviewSelectedRows_Click(object sender, RoutedEventArgs e)
         {
             if (dataGrid.SelectedItems.Count > 0)
             {
@@ -330,7 +331,7 @@ namespace FloraReview
             }
         }
 
-        private void Export_Click(object sender, RoutedEventArgs e)
+        private void ExportSelectedRows_Click(object sender, RoutedEventArgs e)
         {
             if (dataGrid.SelectedItems.Count > 0)
             {
@@ -355,7 +356,7 @@ namespace FloraReview
 
                 if (dataTable.Rows.Count > 0)
                 {
-                    exportRows(dataTable);
+                    exportSelectedRows(dataTable);
                 }
                 else
                 {

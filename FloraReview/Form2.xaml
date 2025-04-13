@@ -58,27 +58,27 @@
                       MaxColumnWidth="400" MinColumnWidth="70" RowDetailsVisibilityMode="Collapsed" IsReadOnly="True" >
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Select all" Click="SelectAll_Click"/>
+                    <MenuItem Header="Select _All" Click="SelectAll_Click" />
                     <Separator/>
-                    <MenuItem x:Name="reviewMenuItem" Header="Review" Click="Review_Click" IsEnabled="False"/>
-                    <MenuItem x:Name="exportMenuItem" Header="Export" Click="Export_Click" IsEnabled="False"/>
+                    <MenuItem x:Name="reviewMenuItem" Header="_Review Selected Rows" Click="ReviewSelectedRows_Click" IsEnabled="False" />
+                    <MenuItem x:Name="exportMenuItem" Header="_Export Selected Rows" Click="ExportSelectedRows_Click" IsEnabled="False" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>
 
         <!--<ToolBar Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" >-->
         <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Right" >
-            <Button x:Name="ReviewButton" Click="Review_Click" Margin="0,0,5,0" IsEnabled="False">
+            <Button x:Name="ReviewButton" Click="ReviewSelectedRows_Click" Margin="0,0,5,0" IsEnabled="False">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Edit" />
                     <TextBlock Text="Review" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
 
-            <Button x:Name="ExportButton" Click="ExportCsv_Click" Margin="0,0,5,0" IsEnabled="False">
+            <Button x:Name="ExportButton" Click="ExportQuery_Click" Margin="0,0,5,0" IsEnabled="False">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="FileExport" />
-                    <TextBlock Text="Export" VerticalAlignment="Center"/>
+                    <TextBlock Text="Export Query" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
 
@@ -102,7 +102,7 @@
             <Border.Background>
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.InfoColorKey}}"/>
             </Border.Background>
-            <Label x:Name="Info" Content="Double click on a row to edit, or select rows and right-click -> Review."  />
+            <Label x:Name="Info" Content="Double click on a row to edit, or select rows and click -> Review."  />
         </Border>
     </Grid>
 </Window>

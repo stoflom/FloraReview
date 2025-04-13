@@ -8,50 +8,48 @@
     <Grid Margin="10" >
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="50" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="50" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="100" />
         </Grid.ColumnDefinitions>
 
-        <Label Content="Find:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" />
-        <TextBox x:Name="SearchTextBox" Grid.Row="0" Grid.Column="1" Margin="5,0,0,0" />
         
-        <ToolBar Grid.Row="2" Grid.Column="0" Grid.ColumnSpan ="2 " Margin="5,0,0,0" >
+        <TextBox x:Name="SearchTextBox" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="10,0,10,0" />
+
+        <StackPanel Grid.Row="1" Grid.Column="1"  Orientation="Horizontal" HorizontalAlignment="Left">
             <Button x:Name="Find" Click="FindButton_Click" Width="80">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="FindInPage" />
                     <TextBlock Text="Find" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button x:Name="Next" Click="NextButton_Click" Width="90">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="ChevronRight" />
-                    <TextBlock Text="Next" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-            <Button x:Name="Previous" Click="PreviousButton_Click" Width="100">
+            <Button x:Name="Previous" Click="PreviousButton_Click" Width="50" Margin="5,0,0,0">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="ChevronLeft" />
-                    <TextBlock Text="Previous" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button x:Name="ClearButton" Click="ClearButton_Click" Width="90">
+            <Button x:Name="Next" Click="NextButton_Click" Width="50" Margin="10,0,0,0">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="ChevronRight" />
+                </StackPanel>
+            </Button>
+            <Button x:Name="ClearButton" Click="ClearButton_Click" Width="90" Margin="10,0,0,0">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Clear" />
-                    <TextBlock Text="Clear" VerticalAlignment="Center"/>
+                    <TextBlock Text="Clear" VerticalAlignment="Center" Margin="3,0,0,0"/>
                 </StackPanel>
             </Button>
-            
-            <Button x:Name="CloseButton" Click="CloseButton_Click" Width="90">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="Close" />
-                    <TextBlock Text="Close" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
+        </StackPanel>
 
-        </ToolBar>
+        <Button x:Name="CloseButton" Grid.Row="1" Grid.Column="2" Click="CloseButton_Click" Width="90" Margin="5,0,0,0">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="Close" />
+                <TextBlock Text="Close" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Button>
     </Grid>
 </Window>
 
