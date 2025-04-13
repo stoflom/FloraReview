@@ -24,26 +24,35 @@
         <TextBlock Name="Title" Text="FloraReview" FontSize="24" FontWeight="Bold" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,10,0,0" />
         <Label x:Name="AppVersion" Content="Version: 1" FontSize="14" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="2"  Margin="0,5,0,0" />
 
-        <Label x:Name="UserLabel" Content="User:" FontSize="14" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0"  Margin="10,20,0,0" HorizontalContentAlignment="Right"/>
-        <TextBox x:Name="UserTextBox" Text="User" FontSize="14" FontWeight="DemiBold" Height="25" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="5,20,0,0" TextChanged="User_TextChanged" />
+        <Label x:Name="UserLabel" Content="User:" FontSize="14" VerticalContentAlignment="Center" 
+               Grid.Row="1" Grid.Column="0"  Margin="10,20,0,0" HorizontalContentAlignment="Right"/>
+        <TextBox x:Name="UserTextBox" Text="User" FontSize="14" FontWeight="DemiBold" Height="25" 
+                 ToolTip="Your name as reviewer"
+                 Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="5,20,0,0" TextChanged="User_TextChanged" />
 
         <Label Name="dbName" Content="Database Name:"  Grid.Row="2" Grid.Column="0"  HorizontalContentAlignment="Right" VerticalAlignment="Center"/>
         <TextBox x:Name="dbPathTextBox" Grid.Row="2" Grid.Column="1"  TextChanged="dbPathTextBox_TextChanged" VerticalAlignment="Center" />
 
-        <!--<ToolBar Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" >-->
-        <Button x:Name="SelectFileButton" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" Click="SelectFile_Click" Margin="10,0,0,0">
+        <Button x:Name="SelectFileButton" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" Click="SelectFile_Click"
+                ToolTip="Select the database" Margin="10,0,0,0">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Folder"/>
                     <TextBlock Text="Choose File" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
-        <!--</ToolBar>-->
 
-        <Label x:Name="QueryNameLabel" Content="Scientific Name Query:" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0"  Margin="10,20,0,10" HorizontalContentAlignment="Right"/>
-        <TextBox x:Name="queryNameTextBox" Height="25" Grid.Row="3" Grid.Column="1"  Grid.ColumnSpan="2" Margin="5,20,0,10" />
+        <Label x:Name="QueryNameLabel" Content="Scientific Name Query:"
+               VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" 
+               Margin="10,20,0,10" HorizontalContentAlignment="Right"/>
+        <TextBox x:Name="queryNameTextBox" Height="25" Grid.Row="3"
+                 ToolTip="Phrases to find, e.g. Acac%erio (%->any text), blank->all"
+                 Grid.Column="1"  Grid.ColumnSpan="2" Margin="5,20,0,10" />
 
-        <Label x:Name="TextTypeLabel" Content="TextTitle Query:" HorizontalAlignment="Right" Grid.Row="4" Grid.Column="0"  Margin="10,5,0,0" HorizontalContentAlignment="Right" Height="25"/>
-        <ListBox x:Name="textTitleListBox" SelectionMode="Multiple" Grid.Row="4" Grid.Column="1" Width="100" Margin="5,15,186,20" HorizontalAlignment="Left" AutomationProperties.LabeledBy="{Binding ElementName=TextTypeLabel, Mode=OneWay}">
+        <Label x:Name="TextTypeLabel" Content="TextTitle Query:" HorizontalAlignment="Right"
+               Grid.Row="4" Grid.Column="0"  Margin="10,5,0,0" HorizontalContentAlignment="Right" Height="25"/>
+        <ListBox x:Name="textTitleListBox" SelectionMode="Multiple" Grid.Row="4" Grid.Column="1" 
+                 ToolTip="Select TextTitles to include, blank->all" Width="100" 
+                 Margin="5,15,186,20" HorizontalAlignment="Left" >
             <ListBoxItem Content="Morphology" />
             <ListBoxItem Content="Diagnostic" />
             <ListBoxItem Content="Distribution" />
@@ -52,14 +61,18 @@
 
         <!--<ToolBar Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"  >-->
         <StackPanel  Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" >
-            <Button x:Name="LoadButton" Click="LoadData_Click"  IsEnabled="False" VerticalAlignment="Stretch" Margin="0,0,5,0">
+            <Button x:Name="LoadButton" Click="LoadData_Click"  IsEnabled="False"
+                    VerticalAlignment="Stretch" Margin="0,0,5,0"
+                    ToolTip="Load data from database">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Database"  Margin="0,0,5,0"/>
                     <TextBlock Text="Load Data" VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
 
-            <Button x:Name="ExportButton" Click="ExportData_Click"  IsEnabled="False" VerticalAlignment="Stretch">
+            <Button x:Name="ExportButton" Click="ExportData_Click"  IsEnabled="False" 
+                    ToolTip="Export the whole database"
+                    VerticalAlignment="Stretch">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="DatabaseArrowRight" Margin="0,0,5,0"/>
                     <TextBlock Text="Export DB" VerticalAlignment="Center" />
@@ -71,7 +84,9 @@
 
         <!--<ToolBar  Grid.Row="5" Grid.Column="2"  >-->
 
-        <Button x:Name="QuitButton" Grid.Row="5" Grid.Column="2" Click="QuitApp_Click" HorizontalAlignment="Right" VerticalAlignment="Stretch" >
+        <Button x:Name="QuitButton" Grid.Row="5" Grid.Column="2" Click="QuitApp_Click" 
+                HorizontalAlignment="Right" VerticalAlignment="Stretch" 
+                ToolTip="Quit the application">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Close" Margin="0,0,5,0"/>
                     <TextBlock Text="Close" VerticalAlignment="Center" />

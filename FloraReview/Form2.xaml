@@ -33,23 +33,19 @@
             
             <!--<ToolBar Grid.Column="2" HorizontalAlignment="Right" >-->
             <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" >
-                <Button x:Name="PreviousPageButton" Click="PreviousPage_Click">
-
-                    <StackPanel Orientation="Horizontal" Margin="0,0,5,0">
-                        <materialDesign:PackIcon Kind="ChevronLeft" />
-                        <TextBlock Text="Previous" VerticalAlignment="Center"/>
-                    </StackPanel>
+               
+                <Button x:Name="PreviousPageButton"
+                    Style="{StaticResource MaterialDesignIconButton}" Click="PreviousPage_Click"
+                    ToolTip="Previous" HorizontalAlignment="Left" Margin="5,0,0,0">
+                    <materialDesign:PackIcon Kind="ChevronLeft" />
                 </Button>
-
-                <Button  x:Name="NextPageButton" Click="NextPage_Click" Margin="5,0,0,0">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="ChevronRight" />
-                        <TextBlock Text="Next" VerticalAlignment="Center"/>
-                    </StackPanel>
+                <Button Name="NextPageButton"
+                    Style="{StaticResource MaterialDesignIconButton}" Click="NextPage_Click"
+                    ToolTip="Next" HorizontalAlignment="Left" >
+                    <materialDesign:PackIcon Kind="ChevronRight" />
                 </Button>
             </StackPanel>
-            <!--</ToolBar>-->
-
+           
         </Grid>
         <DataGrid Name="dataGrid" Grid.Row="1" AutoGenerateColumns="True"
                       HorizontalAlignment="Stretch"
@@ -68,28 +64,32 @@
 
         <!--<ToolBar Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" >-->
         <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Right" >
-            <Button x:Name="ReviewButton" Click="ReviewSelectedRows_Click" Margin="0,0,5,0" IsEnabled="False">
+            <Button x:Name="ReviewButton" Click="ReviewSelectedRows_Click" Margin="0,0,5,0" IsEnabled="False"
+                    ToolTip="Review the selected rows">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Edit" />
                     <TextBlock Text="Review" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
 
-            <Button x:Name="ExportButton" Click="ExportQuery_Click" Margin="0,0,5,0" IsEnabled="False">
+            <Button x:Name="ExportButton" Click="ExportQuery_Click" Margin="0,0,5,0" IsEnabled="False"
+                    ToolTip="Export the query results">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="FileExport" />
                     <TextBlock Text="Export Query" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
 
-            <Button  Click="Refresh_Click" Margin="0,0,5,0" >
+            <Button  Click="Refresh_Click" Margin="0,0,5,0" 
+                     ToolTip="Refresh from the database">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Refresh" />
                     <TextBlock Text="Refresh" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
 
-            <Button  Click="Close_Click" HorizontalAlignment="Stretch" Margin="50,0,0,0">
+            <Button  Click="Close_Click" HorizontalAlignment="Stretch" Margin="50,0,0,0"
+                     ToolTip="Close window">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Close" />
                     <TextBlock Text="Close" VerticalAlignment="Center"/>

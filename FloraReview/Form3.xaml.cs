@@ -80,7 +80,7 @@ namespace FloraReview
             scientificNameTextBlock.Text = $"Scientific Name: {currentRow["CalcFullName"]}";
             currentStatus = string.IsNullOrEmpty(currentRow["Status"]?.ToString()) ? "open" : currentRow["Status"]?.ToString();
             currentComment = string.IsNullOrEmpty(currentRow["Comment"]?.ToString()) ? string.Empty : currentRow["Comment"]?.ToString();
-            logTextBlock.Text = FixComment(currentComment);
+            logTextBox.Text = FixComment(currentComment);
             originalTextBox.Text = currentRow["CoalescedText"].ToString();
 
             if (string.IsNullOrEmpty(currentRow["ApprovedText"]?.ToString()))
@@ -225,7 +225,7 @@ namespace FloraReview
 
                     string userComment = AskForComment();
                     currentComment = AppendComment($"{statusLabel} {DateTime.Now} {User}: {userComment}", conn);
-                    logTextBlock.Text = FixComment(currentComment);
+                    logTextBox.Text = FixComment(currentComment);
                     currentStatus = newStatus;
                     modified = false;
 
@@ -271,7 +271,7 @@ namespace FloraReview
                     cmd.ExecuteNonQuery();
 
                     currentComment = AppendComment($"SAVED {DateTime.Now} {User}", conn);
-                    logTextBlock.Text = FixComment(currentComment);
+                    logTextBox.Text = FixComment(currentComment);
                     modified = false;
                     UpdateCurrentRow();
                 }
