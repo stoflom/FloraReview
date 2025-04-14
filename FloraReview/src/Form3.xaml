@@ -18,15 +18,15 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="200" />
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Row="0" Margin="0,5,0,10">
-            <TextBlock Name="rowIdTextBlock" FontSize="12" FontWeight="Bold" Margin="0,5,0,0" />
-            <TextBlock Name="guidTextBlock" FontSize="12" FontWeight="Bold" Margin="0,5,0,0" />
-            <TextBlock Name="textTypeTextBlock" FontSize="12" FontWeight="Bold" Margin="0,5,0,0" />
-            <TextBlock Name="scientificNameTextBlock" FontSize="12" FontWeight="Bold" Margin="0,5,0,5"/>
+            <TextBlock Name="rowIdTextBlock" FontSize="12" FontWeight="Normal" Margin="0,5,0,0" IsEnabled="False" />
+            <TextBlock Name="guidTextBlock" FontSize="12" FontWeight="Normal" Margin="0,5,0,0" IsEnabled="False" />
+            <TextBlock Name="textTypeTextBlock" FontSize="12" FontWeight="Normal" Margin="0,5,0,0" IsEnabled="False" />
+            <TextBlock Name="scientificNameTextBlock" TextWrapping="Wrap" FontSize="12" FontWeight="Bold" Margin="0,5,0,5" IsEnabled="False"/>
         </StackPanel>
 
         <TextBox Name="logTextBox" FontSize="12" FontWeight="Bold" IsReadOnly="True" VerticalScrollBarVisibility="Auto"

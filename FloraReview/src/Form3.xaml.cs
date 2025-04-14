@@ -74,7 +74,7 @@ namespace FloraReview
             currentRowId = currentRow["rowid"]?.ToString();
             SelectedRowLabel.Content = $"{currentIndex + 1} of {selectedRows.Count}";
 
-            rowIdTextBlock.Text = $"Row ID: {currentRow}";
+            rowIdTextBlock.Text = $"Row ID: {currentRow["rowid"]}";
             guidTextBlock.Text = $"GUID: {currentRow["Id"]}";
             textTypeTextBlock.Text = $"Text Type: {currentRow["TextTitle"]}";
             scientificNameTextBlock.Text = $"Scientific Name: {currentRow["CalcFullName"]}";
