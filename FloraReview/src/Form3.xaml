@@ -33,7 +33,7 @@
                      Grid.Row="0" Grid.Column="1" Height="95" Margin="0,0,20,0"
                      TextWrapping="Wrap" AllowDrop="False" Focusable="False" IsTabStop="False" ToolTip="Comments Log" />
 
-        <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,5,0,10" Orientation="Horizontal">
+        <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,5,0,10" Orientation="Horizontal" HorizontalAlignment="Right">
             <Label x:Name="SelectedRowLabel" Content="Row 1 of 1" FontSize="12" FontWeight="SemiBold" Margin="0,5,0,0" VerticalAlignment="Center"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0" >
                 <Button x:Name="BackButton" Click="Back_Click"
