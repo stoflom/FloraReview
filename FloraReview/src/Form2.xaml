@@ -30,22 +30,13 @@
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Name="rowCountLabel" Content="Total rows loaded is: 1" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" />
             <Label Grid.Column="1" Name="pageNumberLabel" Content="Page 1 of 1 pages" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center"  />
-            
-            <!--<ToolBar Grid.Column="2" HorizontalAlignment="Right" >-->
+
             <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" >
-               
-                <Button x:Name="PreviousPageButton"
-                    Style="{StaticResource MaterialDesignIconButton}" Click="PreviousPage_Click"
-                    ToolTip="Previous" HorizontalAlignment="Left" Margin="5,0,0,0">
-                    <materialDesign:PackIcon Kind="ChevronLeft" />
-                </Button>
-                <Button Name="NextPageButton"
-                    Style="{StaticResource MaterialDesignIconButton}" Click="NextPage_Click"
-                    ToolTip="Next" HorizontalAlignment="Left" >
-                    <materialDesign:PackIcon Kind="ChevronRight" />
-                </Button>
+                <Button x:Name="PreviousPageButton" Click="PreviousPage_Click"
+                        Style="{StaticResource IconButtonStyle}" Tag="ChevronLeft" ToolTip="Previous" />
+                <Button Name="NextPageButton" Click="NextPage_Click"
+                        Style="{StaticResource IconButtonStyle}" Tag="ChevronRight" ToolTip="Next" Margin="0,0,0,0" />
             </StackPanel>
-           
         </Grid>
         <DataGrid Name="dataGrid" Grid.Row="1" AutoGenerateColumns="True"
                       HorizontalAlignment="Stretch"
@@ -62,41 +53,16 @@
             </DataGrid.ContextMenu>
         </DataGrid>
 
-        <!--<ToolBar Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" >-->
         <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Right" >
-            <Button x:Name="ReviewButton" Click="ReviewSelectedRows_Click" Margin="0,0,5,0" IsEnabled="False"
-                    ToolTip="Review the selected rows">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="Edit" />
-                    <TextBlock Text="Review" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-
-            <Button x:Name="ExportButton" Click="ExportQuery_Click" Margin="0,0,5,0" IsEnabled="False"
-                    ToolTip="Export the query results">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="FileExport" />
-                    <TextBlock Text="Export Query" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-
-            <Button  Click="Refresh_Click" Margin="0,0,5,0" 
-                     ToolTip="Refresh from the database">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="Refresh" />
-                    <TextBlock Text="Refresh" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-
-            <Button  Click="Close_Click" HorizontalAlignment="Stretch" Margin="50,0,0,0"
-                     ToolTip="Close window">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="Close" />
-                    <TextBlock Text="Close" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
+            <Button x:Name="ReviewButton" Content="Review" Click="ReviewSelectedRows_Click" IsEnabled="False"
+                    Style="{StaticResource IconButtonStyle}" Tag="Edit" ToolTip="Review the selected rows" />
+            <Button x:Name="ExportButton" Content="Export" Click="ExportQuery_Click" IsEnabled="False"
+                    Style="{StaticResource IconButtonStyle}" Tag="FileExport" ToolTip="Export the query results" />
+            <Button Click="Refresh_Click" Content="Refresh"
+                    Style="{StaticResource IconButtonStyle}" Tag="Refresh" ToolTip="Refresh from the database" />
+            <Button Click="Close_Click" Content="Close"
+                    Style="{StaticResource IconButtonStyle}" Tag="Close" ToolTip="Close window" />
         </StackPanel>
-        <!--</ToolBar>-->
 
         <Border Grid.Row="3" >
             <Border.Background>
@@ -106,4 +72,3 @@
         </Border>
     </Grid>
 </Window>
-

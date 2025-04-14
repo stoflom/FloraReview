@@ -33,13 +33,10 @@
         <Label Name="dbName" Content="Database Name:"  Grid.Row="2" Grid.Column="0"  HorizontalContentAlignment="Right" VerticalAlignment="Center"/>
         <TextBox x:Name="dbPathTextBox" Grid.Row="2" Grid.Column="1"  TextChanged="dbPathTextBox_TextChanged" VerticalAlignment="Center" />
 
-        <Button x:Name="SelectFileButton" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" Click="SelectFile_Click"
-                ToolTip="Select the database" Margin="10,0,0,0">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="Folder"/>
-                    <TextBlock Text="Choose File" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
+      
+
+        <Button x:Name="SelectFileButton" Content="Select Database" Grid.Row="2" Grid.Column="2" Click="SelectFile_Click"
+        Style="{StaticResource IconButtonStyle}" Tag="Folder" ToolTip="Choose File" />
 
         <Label x:Name="QueryNameLabel" Content="Scientific Name Query:"
                VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" 
@@ -59,40 +56,22 @@
             <ListBoxItem Content="Habitat" />
         </ListBox>
 
-        <!--<ToolBar Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"  >-->
+        
         <StackPanel  Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" >
-            <Button x:Name="LoadButton" Click="LoadData_Click"  IsEnabled="False"
-                    VerticalAlignment="Stretch" Margin="0,0,5,0"
-                    ToolTip="Load data from database">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="Database"  Margin="0,0,5,0"/>
-                    <TextBlock Text="Load Data" VerticalAlignment="Center" />
-                </StackPanel>
-            </Button>
+           
+            
+            <Button x:Name="LoadButton" Content="Load Data" Grid.Row="5" Grid.Column="0" Click="LoadData_Click"
+        Style="{StaticResource IconButtonStyle}" Tag="Database" ToolTip="Load data from database" />
 
-            <Button x:Name="ExportButton" Click="ExportData_Click"  IsEnabled="False" 
-                    ToolTip="Export the whole database"
-                    VerticalAlignment="Stretch">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="DatabaseArrowRight" Margin="0,0,5,0"/>
-                    <TextBlock Text="Export DB" VerticalAlignment="Center" />
-                </StackPanel>
-            </Button>
+            <Button x:Name="ExportButton" Content="Export DB" Grid.Row="5" Grid.Column="1" Click="ExportData_Click"
+        Style="{StaticResource IconButtonStyle}" Tag="DatabaseArrowRight" ToolTip="Export full descriptions table" />
 
         </StackPanel>
-        <!--</ToolBar>-->
-
-        <!--<ToolBar  Grid.Row="5" Grid.Column="2"  >-->
-
-        <Button x:Name="QuitButton" Grid.Row="5" Grid.Column="2" Click="QuitApp_Click" 
-                HorizontalAlignment="Right" VerticalAlignment="Stretch" 
-                ToolTip="Quit the application">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="Close" Margin="0,0,5,0"/>
-                    <TextBlock Text="Close" VerticalAlignment="Center" />
-                </StackPanel>
-            </Button>
-        <!--</ToolBar>-->
+        
+        <Button x:Name="QuitButton" Content="Close" Grid.Row="5" Grid.Column="2" Click="QuitApp_Click"
+        Style="{StaticResource IconButtonStyle}" Tag="Close" ToolTip="Close" />
+        
+       
         
         <Border Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3">
             <Border.Background>

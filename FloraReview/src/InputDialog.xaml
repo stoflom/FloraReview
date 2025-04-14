@@ -21,17 +21,10 @@
                  Background="White" BorderBrush="#66BB6A" Foreground="#2E7D32" BorderThickness="1"
                  VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" AcceptsReturn="True" />
 
-        <Button x:Name="OkButton" Width="100" Margin="10,0,0,0" Grid.Row="2" Grid.Column="1" Click="OkButton_Click">
-            <StackPanel Orientation="Horizontal">
-                <materialDesign:PackIcon Kind="Check" Width="16" Height="16" Margin="0,0,5,0"/>
-                <TextBlock Text="OK" VerticalAlignment="Center"/>
-            </StackPanel>
-        </Button>
-        <Button x:Name="CancelButton" Width="100" Margin="10,0,0,0" Grid.Row="2" Grid.Column="2" Click="CancelButton_Click">
-            <StackPanel Orientation="Horizontal">
-                <materialDesign:PackIcon Kind="Cancel" Width="16" Height="16" Margin="0,0,5,0"/>
-                <TextBlock Text="Cancel" VerticalAlignment="Center"/>
-            </StackPanel>
-        </Button>
+        <Button x:Name="OkButton" Content="OK" Grid.Row="2" Grid.Column="1" Click="OkButton_Click"
+                Style="{StaticResource IconButtonStyle}" Tag="Check" ToolTip="OK" />
+        <Button x:Name="CancelButton" Content="Cancel" Grid.Row="2" Grid.Column="2" Click="CancelButton_Click"
+                Style="{StaticResource IconButtonStyle}" Tag="Cancel" ToolTip="Cancel" />
     </Grid>
 </Window>
+

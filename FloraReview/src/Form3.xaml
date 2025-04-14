@@ -29,26 +29,17 @@
             <TextBlock Name="scientificNameTextBlock" FontSize="12" FontWeight="Bold" Margin="0,5,0,5"/>
         </StackPanel>
 
-
         <TextBox Name="logTextBox" FontSize="12" FontWeight="Bold" IsReadOnly="True" VerticalScrollBarVisibility="Auto"
                      Grid.Row="0" Grid.Column="1" Height="95" Margin="0,0,20,0"
                      TextWrapping="Wrap" AllowDrop="False" Focusable="False" IsTabStop="False" ToolTip="Comments Log" />
 
         <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,5,0,10" Orientation="Horizontal">
             <Label x:Name="SelectedRowLabel" Content="Row 1 of 1" FontSize="12" FontWeight="SemiBold" Margin="0,5,0,0" VerticalAlignment="Center"/>
-
-
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0" >
-                <Button x:Name="BackButton"
-                Style="{StaticResource MaterialDesignIconButton}" Click="Back_Click"
-                ToolTip="Previous" HorizontalAlignment="Left" Margin="5,0,0,0">
-                    <materialDesign:PackIcon Kind="ChevronLeft" />
-                </Button>
-                <Button Name="ForwardButton"
-                Style="{StaticResource MaterialDesignIconButton}"   Click="Forward_Click"
-                ToolTip="Next" HorizontalAlignment="Left" >
-                    <materialDesign:PackIcon Kind="ChevronRight" />
-                </Button>
+                <Button x:Name="BackButton" Click="Back_Click"
+                        Style="{StaticResource IconButtonStyle}" Tag="ChevronLeft" ToolTip="Previous" />
+                <Button Name="ForwardButton" Click="Forward_Click"
+                        Style="{StaticResource IconButtonStyle}" Tag="ChevronRight" ToolTip="Next" Margin="0,0,0,0" />
             </StackPanel>
         </StackPanel>
 
@@ -76,21 +67,14 @@
             <TextBlock Grid.Row="0" Grid.Column="0"
             Text="Diff Text (The difference between original- and modified-text.):" FontSize="12" FontWeight="SemiBold" Margin="0,10,0,5" HorizontalAlignment="Left" Padding="0,0,5,0" VerticalAlignment="Bottom"  />
 
-
-
-            <Button  Grid.Row="0" Grid.Column="1"
-                Style="{StaticResource MaterialDesignIconButton}"
-                ToolTip="Refresh Diff Text" HorizontalAlignment="Right" Margin="10,0,0,0">
-                <materialDesign:PackIcon Kind="Refresh" />
-            </Button>
-
+            <Button Grid.Row="0" Grid.Column="1" Click="Refresh_Click"
+                    Style="{StaticResource IconButtonStyle}" Tag="Refresh" ToolTip="Refresh Diff Text" />
 
             <RichTextBox Name="diffRichTextBox" 
                Grid.Row="1" Grid.ColumnSpan="3"
                MinHeight="50" 
                IsReadOnly="True" VerticalScrollBarVisibility="Auto"
-               Background="WhiteSmoke"  AllowDrop="False"  IsTabStop="True" MouseWheel="modifiedRichTextBox_MouseWheel" VerticalContentAlignment="Top" ScrollViewer.CanContentScroll="True" IsEnabled="True" 
-                         >
+               Background="WhiteSmoke"  AllowDrop="False"  IsTabStop="True" MouseWheel="modifiedRichTextBox_MouseWheel" VerticalContentAlignment="Top" ScrollViewer.CanContentScroll="True" IsEnabled="True" >
                 <RichTextBox.ContextMenu>
                     <ContextMenu>
                         <MenuItem Command="ApplicationCommands.SelectAll" />
@@ -148,54 +132,24 @@
             </RichTextBox>
         </Grid>
 
-
         <StackPanel Grid.Row ="7" Grid.Column="0"  HorizontalAlignment="Left" Grid.ColumnSpan="2" Orientation="Horizontal">
-            <Button x:Name="UndoButton"  Click="Undo_Click" ToolTip="Undo changes">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="Undo" Margin="0,0,5,0"/>
-                    <TextBlock Text="Undo" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-
-            <Button x:Name="RevertButton" Click="Revert_Click" ToolTip="Revert to original text" Margin="5,0,0,0">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="Restore" Margin="0,0,5,0"/>
-                    <TextBlock Text="Revert" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-            <Button x:Name="ApproveButton"  Click="Approve_Click"  ToolTip="Approve and close" Margin="5,0,0,0">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="Approve" Margin="0,0,5,0"/>
-                    <TextBlock Text="Approve" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-            <Button x:Name="ReOpenButton"   Click="ReOpen_Click"  ToolTip="Re-open closed" Margin="5,0,0,0" >
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="OpenInApp"  Margin="0,0,5,0"/>
-                    <TextBlock Text="Re-open" VerticalAlignment="Center" IsEnabled="False"/>
-                </StackPanel>
-            </Button>
-            <Button x:Name="DiscardButton"   Click="Discard_Click" ToolTip="Load AI modified text" Margin="5,0,0,0" >
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="Dislike"  Margin="0,0,5,0"/>
-                    <TextBlock Text="Discard" VerticalAlignment="Center" IsEnabled="False"/>
-                </StackPanel>
-            </Button>
+            <Button x:Name="UndoButton" Content="Undo" Click="Undo_Click" 
+                    Style="{StaticResource IconButtonStyle}" Tag="Undo" ToolTip="Undo changes" />
+            <Button x:Name="RevertButton" Content="Revert" Click="Revert_Click"
+                    Style="{StaticResource IconButtonStyle}" Tag="Restore" ToolTip="Revert to original text" />
+            <Button x:Name="ApproveButton" Content="Approve" Click="Approve_Click"
+                    Style="{StaticResource IconButtonStyle}" Tag="Approve" ToolTip="Approve and close" />
+            <Button x:Name="ReOpenButton" Content="Re-open" Click="ReOpen_Click"
+                    Style="{StaticResource IconButtonStyle}" Tag="OpenInApp" ToolTip="Re-open closed" />
+            <Button x:Name="DiscardButton" Click="Discard_Click"
+                    Style="{StaticResource IconButtonStyle}" Tag="Dislike" ToolTip="Load AI modified text" />
         </StackPanel>
 
         <StackPanel Grid.Row ="7" Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal">
-            <Button x:Name="SaveButton"  Click="Save_Click"  ToolTip="Save text">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="ContentSave" Margin="0,0,5,0"/>
-                    <TextBlock Text="Save" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-            <Button x:Name="CloseButton" Click="Close_Click"  ToolTip="Close window" Margin="5,0,0,0" >
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="Close"  Margin="0,0,5,0"/>
-                    <TextBlock Text="Close" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
+            <Button x:Name="SaveButton"  Content="Save" Click="Save_Click"
+                    Style="{StaticResource IconButtonStyle}" Tag="ContentSave" ToolTip="Save text" />
+            <Button x:Name="CloseButton"  Content="Close" Click="Close_Click"
+                    Style="{StaticResource IconButtonStyle}" Tag="Close" ToolTip="Close window" />
         </StackPanel>
 
         <Border Grid.Row="8" Grid.ColumnSpan="3" Margin="0,5,0,0">
@@ -214,4 +168,3 @@
         </Border>
     </Grid>
 </Window>
-
