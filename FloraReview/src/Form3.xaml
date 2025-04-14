@@ -68,7 +68,7 @@
             Text="Diff Text (The difference between original- and modified-text.):" FontSize="12" FontWeight="SemiBold" Margin="0,10,0,5" HorizontalAlignment="Left" Padding="0,0,5,0" VerticalAlignment="Bottom"  />
 
             <Button Grid.Row="0" Grid.Column="1" Click="Refresh_Click"
-                    Style="{StaticResource IconButtonStyle}" Tag="Refresh" ToolTip="Refresh Diff Text" />
+                    Style="{StaticResource IconButtonStyle}" Tag="Refresh" ToolTip="Refresh Diff Text" HorizontalAlignment="Right" />
 
             <RichTextBox Name="diffRichTextBox" 
                Grid.Row="1" Grid.ColumnSpan="3"
@@ -141,8 +141,8 @@
                     Style="{StaticResource IconButtonStyle}" Tag="Approve" ToolTip="Approve and close" />
             <Button x:Name="ReOpenButton" Content="Re-open" Click="ReOpen_Click"
                     Style="{StaticResource IconButtonStyle}" Tag="OpenInApp" ToolTip="Re-open closed" />
-            <Button x:Name="DiscardButton" Click="Discard_Click"
-                    Style="{StaticResource IconButtonStyle}" Tag="Dislike" ToolTip="Load AI modified text" />
+            <Button x:Name="DiscardButton" Content="Discard" Click="Discard_Click"
+                    Style="{StaticResource IconButtonStyle}" Tag="Dislike" ToolTip="Discard changes, load AI modified text" />
         </StackPanel>
 
         <StackPanel Grid.Row ="7" Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal">
