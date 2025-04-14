@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Collections;
 using System.Text.RegularExpressions;
 
 namespace FloraReview
@@ -52,8 +53,8 @@ namespace FloraReview
                 this.selectedRows = selectedRows;
                 this.dbPath = dbPath;
                 this.User = User;
-
                 LoadCurrentRow();
+
             }
             else
             {
