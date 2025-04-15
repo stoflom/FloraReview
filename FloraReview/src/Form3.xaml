@@ -40,7 +40,7 @@
                 <Button x:Name="BackButton" Click="Back_Click"
                         Style="{StaticResource IconButtonStyle}" Tag="ChevronLeft" ToolTip="Previous" />
                 <Button Name="ForwardButton" Click="Forward_Click"
-                        Style="{StaticResource IconButtonStyle}" Tag="ChevronRight" ToolTip="Next" Margin="0,0,0,0" />
+                        Style="{StaticResource IconButtonStyle}" Tag="ChevronRight" ToolTip="Next" Margin="0,0,10,0" />
             </StackPanel>
         </StackPanel>
 
@@ -69,7 +69,7 @@
             Text="Diff Text (The difference between original- and modified-text.):" FontSize="12" FontWeight="SemiBold" Margin="0,10,0,5" HorizontalAlignment="Left" Padding="0,0,5,0" VerticalAlignment="Bottom"  />
 
             <Button Grid.Row="0" Grid.Column="1" Click="Refresh_Click"
-                    Style="{StaticResource IconButtonStyle}" Tag="Refresh" ToolTip="Refresh Diff Text" HorizontalAlignment="Right" />
+                    Style="{StaticResource IconButtonStyle}" Tag="Refresh" ToolTip="Refresh Diff Text" HorizontalAlignment="Right" Margin="10,0,10,0" />
 
             <RichTextBox Name="diffRichTextBox" 
                Grid.Row="1" Grid.ColumnSpan="3"
@@ -98,8 +98,11 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Row="0" Grid.ColumnSpan="3"
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
                 Text="Modified Text (The text as edited by Gemini AI or the saved text. You can edit this text if it is OPEN.):" FontSize="12" FontWeight="SemiBold" Margin="0,10,0,5" />
+
+            <CheckBox x:Name="spellCheckBox" Grid.Column="2" Content="Spell Check" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,10,0" Click="spellCheckBox_Click"/>
+
             <RichTextBox 
                 Grid.Row="1" Grid.ColumnSpan="3"    
                 Name="modifiedRichTextBox" MinHeight="100" VerticalScrollBarVisibility="Auto" 
@@ -132,6 +135,7 @@
                 </RichTextBox.ContextMenu>
 
             </RichTextBox>
+           
         </Grid>
 
         <StackPanel Grid.Row ="7" Grid.Column="0"  HorizontalAlignment="Left" Grid.ColumnSpan="2" Orientation="Horizontal">

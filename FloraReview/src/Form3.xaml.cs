@@ -404,7 +404,10 @@ namespace FloraReview
             }
         }
 
-
+        private void spellCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            modifiedRichTextBox.SpellCheck.IsEnabled = spellCheckBox.IsChecked == true;
+        }
         private string GetSelectedText(RichTextBox richTextBox)
         {
             TextRange selection = richTextBox.Selection;
@@ -522,6 +525,8 @@ namespace FloraReview
             base.OnClosed(e);
             saveRow();
         }
+
+
     }
 }
 
