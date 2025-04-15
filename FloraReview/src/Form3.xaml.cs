@@ -11,17 +11,23 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Collections;
 using System.Text.RegularExpressions;
+using SQLite3DB;
 
 namespace FloraReview
 {
     public partial class Form3 : Window
     {
         // Constants for statuses
-        private const string StatusOpen = "open";
-        private const string StatusClose = "close";
+        private enum Status
+        {
+            Open,
+            Close
+        }
+
+        private const string StatusOpen = "OPEN";
+        private const string StatusClose = "CLOSE";
 
         // Data from database (ReadOnly)
-        private readonly string? dbPath;
         private readonly string? User;
 
         private string? modifiedText;
@@ -29,12 +35,13 @@ namespace FloraReview
         // Local variables updated when the database is updated
         private bool modified = false;
 
-        private readonly List<DataRow> selectedRows;
+        private readonly List<DataRow>? selectedRows;
         private int currentIndex = 0;
-        private DataRow currentRow;
+        private DataRow? currentRow;
         private string? currentRowId;
         private string? currentComment;
         private string? currentStatus;
+        private SQLite3db? db;
 
 
         private FindDialog? findDialog;
@@ -44,17 +51,15 @@ namespace FloraReview
 
 
 
-        public Form3(string? dbPath, List<DataRow> selectedRows, string? User)
+        public Form3(SQLite3db adb, List<DataRow> selectedRows, string aUser)
         {
             InitializeComponent();
-
+            db = adb;
+            User = aUser;
             if (selectedRows != null && selectedRows.Count > 0)
             {
                 this.selectedRows = selectedRows;
-                this.dbPath = dbPath;
-                this.User = User;
                 LoadCurrentRow();
-
             }
             else
             {
@@ -66,20 +71,18 @@ namespace FloraReview
 
         private void LoadCurrentRow()
         {
-            if (currentIndex < 0 || currentIndex >= selectedRows.Count)
+            if (currentIndex < 0 || selectedRows == null || currentIndex >= selectedRows.Count)
             {
                 return;
             }
-
             currentRow = selectedRows[currentIndex];
             currentRowId = currentRow["rowid"]?.ToString();
             SelectedRowLabel.Content = $"{currentIndex + 1} of {selectedRows.Count}";
-
             rowIdTextBlock.Text = $"Row ID: {currentRow["rowid"]}";
             guidTextBlock.Text = $"GUID: {currentRow["Id"]}";
             textTypeTextBlock.Text = $"Text Type: {currentRow["TextTitle"]}";
             scientificNameTextBlock.Text = $"Scientific Name: {currentRow["CalcFullName"]}";
-            currentStatus = string.IsNullOrEmpty(currentRow["Status"]?.ToString()) ? "open" : currentRow["Status"]?.ToString();
+            currentStatus = string.IsNullOrEmpty(currentRow["Status"]?.ToString()?.ToLower()) ? "open" : currentRow["Status"]?.ToString();
             currentComment = string.IsNullOrEmpty(currentRow["Comment"]?.ToString()) ? string.Empty : currentRow["Comment"]?.ToString();
             logTextBox.Text = FixComment(currentComment);
             originalTextBox.Text = currentRow["CoalescedText"].ToString();
@@ -104,18 +107,20 @@ namespace FloraReview
 
         private void SetStateControls()
         {
-            string status = currentRow["Status"]?.ToString() ?? "open";
-            bool isClosed = status == "close";
-
-            modifiedRichTextBox.IsEnabled = !isClosed;
-            StatusLabel.Content = isClosed ? "CLOSE" : "OPEN";
-            ReOpenButton.IsEnabled = isClosed;
-            ApproveButton.IsEnabled = !isClosed;
-            RevertButton.IsEnabled = !isClosed;
-            SaveButton.IsEnabled = !isClosed && modified;
-            UndoButton.IsEnabled = !isClosed && modified;
-            BackButton.IsEnabled = currentIndex > 0;
-            ForwardButton.IsEnabled = currentIndex < selectedRows.Count - 1;
+            if (selectedRows != null && currentRow != null)
+            {
+                string status = currentRow["Status"]?.ToString() ?? "open";
+                bool isClosed = (status == "close");
+                modifiedRichTextBox.IsEnabled = !isClosed;
+                StatusLabel.Content = isClosed ? StatusClose : StatusOpen;
+                ReOpenButton.IsEnabled = isClosed;
+                ApproveButton.IsEnabled = !isClosed;
+                RevertButton.IsEnabled = !isClosed;
+                SaveButton.IsEnabled = !isClosed && modified;
+                UndoButton.IsEnabled = !isClosed && modified;
+                BackButton.IsEnabled = currentIndex > 0;
+                ForwardButton.IsEnabled = currentIndex < selectedRows.Count - 1;
+            }
         }
 
         private void UpdateModifiedRichTextBox(string? text)
@@ -148,7 +153,7 @@ namespace FloraReview
         private void Forward_Click(object sender, RoutedEventArgs e)
         {
             saveRow();
-            if (currentIndex < selectedRows.Count - 1)
+            if (selectedRows != null && currentIndex < selectedRows.Count - 1)
             {
                 currentIndex++;
                 LoadCurrentRow();
@@ -181,7 +186,7 @@ namespace FloraReview
             {
                 return;
             }
-            SetStatus(StatusOpen, "OPEN");
+            SetStatus(StatusOpen);
         }
 
         private void Approve_Click(object sender, RoutedEventArgs e)
@@ -190,7 +195,7 @@ namespace FloraReview
             {
                 return;
             }
-            SetStatus(StatusClose, "CLOSED");
+            SetStatus(StatusClose);
         }
 
 
@@ -200,50 +205,58 @@ namespace FloraReview
             {
                 return;
             }
-            modifiedText = currentRow["FinalText"]?.ToString() ?? string.Empty;
-            InfoLabel.Content = "Loaded AI reviewed text.";
-            UpdateModifiedRichTextBox(modifiedText);
-            modified = true;
-            SetStateControls();
+            if (currentRow != null)
+            {
+                modifiedText = currentRow["FinalText"]?.ToString() ?? string.Empty;
+                InfoLabel.Content = "Loaded AI reviewed text.";
+                UpdateModifiedRichTextBox(modifiedText);
+                modified = true;
+                SetStateControls();
+            }
         }
 
-        private void SetStatus(string newStatus, string statusLabel)
+        private int SetStatus(string newStatus)
         {
+            int result = 0;
             try
             {
                 string updatedText = GetCleanedText();
+                string statusLabel = newStatus.Trim().ToLower() == "open" ? StatusOpen : StatusClose;
+                Dictionary<string, string?> updates = new();
 
-                using (SQLiteConnection conn = new($"Data Source={dbPath};Version=3;"))
+                string userComment = AskForComment();
+                currentComment += $"{statusLabel} {DateTime.Now} {User}: {userComment}";
+
+                updates["ApprovedText"] = updatedText;
+                updates["Reviewer"] = User;
+                updates["Status"] = newStatus;
+                updates["Comment"] = currentComment;
+                updates["rowid"] = currentRowId;
+
+                if ((result = db.UpdateTable(updates)) > 0)
                 {
-                    conn.Open();
-                    string query = $"UPDATE descriptions SET ApprovedText = @modifiedText, Reviewer = @User, Status = @newStatus WHERE rowid = @rowId";
-                    using SQLiteCommand cmd = new(query, conn);
-                    cmd.Parameters.AddWithValue("@modifiedText", updatedText);
-                    cmd.Parameters.AddWithValue("@User", User);
-                    cmd.Parameters.AddWithValue("@newStatus", newStatus);
-                    cmd.Parameters.AddWithValue("@rowId", currentRowId);
-                    cmd.ExecuteNonQuery();
 
-                    string userComment = AskForComment();
-                    currentComment = AppendComment($"{statusLabel} {DateTime.Now} {User}: {userComment}", conn);
-                    logTextBox.Text = FixComment(currentComment);
+                    InfoLabel.Content = $"Status updated to {statusLabel}.";
+
+                    logTextBox.Text = currentComment;
                     currentStatus = newStatus;
                     modified = false;
 
                     UpdateCurrentRow();
                     SetStateControls();
+
                 }
-                InfoLabel.Content = "Changes saved successfully.";
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error updating status: {ex.Message}");
             }
+            return result;
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            modified = !SaveData();
+            modified = SaveData() != 1;
             SetStateControls();
         }
 
@@ -254,39 +267,45 @@ namespace FloraReview
             WordDiff2.DiffFunction(originalTextBox.Text, textRange.Text, diffRichTextBox);
         }
 
-        private bool SaveData()
+        private int SaveData()
         {
+            int result = 0;
             try
             {
                 string updatedText = GetCleanedText();
+                string statusLabel = currentStatus?.Trim().ToLower() == "open" ? StatusOpen : StatusClose;
+                Dictionary<string, string?> updates = new();
 
-                using (SQLiteConnection conn = new($"Data Source={dbPath};Version=3;"))
+                string userComment = AskForComment();
+                currentComment += $"{statusLabel} {DateTime.Now} {User}: {userComment}";
+
+                updates["ApprovedText"] = updatedText;
+                updates["Reviewer"] = User;
+                updates["Status"] = currentStatus;
+                updates["Comment"] = currentComment;
+                updates["rowid"] = currentRowId;
+
+                if ((result = db.UpdateTable(updates)) > 0)
                 {
-                    conn.Open();
-                    string query = $"UPDATE descriptions SET ApprovedText = @modifiedText, Reviewer = @User, Status = @currentStatus WHERE rowid = @rowId";
-                    using SQLiteCommand cmd = new(query, conn);
-                    cmd.Parameters.AddWithValue("@modifiedText", updatedText);
-                    cmd.Parameters.AddWithValue("@User", User);
-                    cmd.Parameters.AddWithValue("@currentStatus", currentStatus);
-                    cmd.Parameters.AddWithValue("@rowId", currentRowId);
-                    cmd.ExecuteNonQuery();
 
-                    currentComment = AppendComment($"SAVED {DateTime.Now} {User}", conn);
-                    logTextBox.Text = FixComment(currentComment);
+                    InfoLabel.Content = $"Data saved.";
+
+                    logTextBox.Text = currentComment;
                     modified = false;
+
                     UpdateCurrentRow();
+                    SetStateControls();
                 }
-                InfoLabel.Content = "Changes saved successfully.";
-                return true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error saving changes: {ex.Message}");
-                return false;
+                MessageBox.Show($"Error saving: {ex.Message}");
             }
+            return result;
+
         }
 
-        
+
         private string GetCleanedText()
         {
             TextRange textRange = new(modifiedRichTextBox.Document.ContentStart, modifiedRichTextBox.Document.ContentEnd);
@@ -297,18 +316,18 @@ namespace FloraReview
 
         private void Close_Click(object sender, RoutedEventArgs e)
         {
-             this.Close();
+            this.Close();
         }
 
         private void saveRow()
         {
             if (modified && MessageBox.Show("Do you want to save first?", "Save Data?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                modified = !SaveData();
+                modified = SaveData() != 1;
                 SetStateControls();
                 ClearHighlights(modifiedRichTextBox);
             }
-        }               
+        }
 
         private string AskForComment()
         {
@@ -316,16 +335,6 @@ namespace FloraReview
             return inputDialog.ShowDialog() == true ? inputDialog.Comment : string.Empty;
         }
 
-        private string AppendComment(string newComment, SQLiteConnection conn)
-        {
-            string oldComment = string.IsNullOrEmpty(currentComment) ? string.Empty : currentComment + "ǁ";
-            string query = $"UPDATE descriptions SET Comment = @fullComment WHERE rowid = @rowId";
-            using SQLiteCommand cmd = new(query, conn);
-            cmd.Parameters.AddWithValue("@fullComment", oldComment + newComment);
-            cmd.Parameters.AddWithValue("@rowId", currentRowId);
-            cmd.ExecuteNonQuery();
-            return oldComment + newComment;
-        }
 
         private void modifiedRichTextBox_MouseWheel(object sender, MouseWheelEventArgs e)
         {
@@ -347,11 +356,13 @@ namespace FloraReview
 
         private void UpdateCurrentRow()
         {
-            currentRow["Status"] = currentStatus;
-            currentRow["ApprovedText"] = GetCleanedText();
-            currentRow["Reviewer"] = User;
-            currentRow["FinalText"] = GetCleanedText();
-            currentRow["Comment"] = currentComment;
+            if (currentRow != null)
+            {
+                currentRow["Status"] = currentStatus;
+                currentRow["ApprovedText"] = GetCleanedText();
+                currentRow["Reviewer"] = User;
+                currentRow["Comment"] = currentComment;
+            }
         }
 
         private void IncreaseFontSize_Click(object sender, RoutedEventArgs e)

@@ -1,210 +1,79 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿
 using System.Data;
-using System.Data.Common;
-using System.Data.SqlClient;
-using System.Data.SQLite;
+using SQLite3DB;
 using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using FloraReview;
 using Microsoft.Win32; // For SaveFileDialog
 
 namespace FloraReview
 {
     public partial class Form2 : Window
     {
-        private readonly string? dbPath;
-        private readonly string? User;
-
+        private Dictionary<string, string?> inputData;
+        private string? User;
         private int rowCount = 0;
         private int pageIndex = 0;
         private readonly int pageSize = 50;
         private int totalPages = 0;
+        private SQLite3db? db;
 
-        private readonly string queryFrom = $"rowid, Id, CalcFullName, TextTitle, CoalescedText, FinalText, Reviewer, Status, Comment, ApprovedText FROM descriptions ";
-        private string queryWhere;
-        private readonly string? queryName;
-        private readonly string[] textTitles;
-
-        public Form2(Dictionary<string, string?> inputData)
+        public Form2(Dictionary<string, string?> inputdata)
         {
             InitializeComponent();
 
-            if (inputData == null || !inputData.TryGetValue("dbPath", out dbPath) || string.IsNullOrEmpty(dbPath))
-            {
-                throw new ArgumentException("Invalid database path provided.");
-            }
-            if (inputData == null || !inputData.TryGetValue("user", out User) || string.IsNullOrEmpty(User))
+            if (inputdata == null || !inputdata.TryGetValue("user", out User) || string.IsNullOrEmpty(User))
             {
                 throw new ArgumentException("Invalid user name provided.");
             }
-            if (inputData == null || !inputData.TryGetValue("queryName", out queryName) || string.IsNullOrEmpty(queryName))
-            {
-                queryName = string.Empty;
-            }
-         
-            if (inputData == null || 
-                !inputData.TryGetValue("textTitle", out string? textTitle) ||
-                string.IsNullOrEmpty(textTitle) ||
-                textTitle.Length < 1)
-            {
-                this.textTitles = Array.Empty<string>();
-            }
-            else 
-            {
-                this.textTitles = getTextTitles(textTitle);
-            }
-           
-              
-            this.queryWhere = ConstructQueryWhere();
+            inputData = inputdata;
+            db = new SQLite3db(inputData);
             Refresh();
         }
 
-       
+
         public void Refresh()
         {
-            CalculateTotalPages();
+            rowCount = db.GetQueryRowCount();
+            totalPages = (int)Math.Ceiling((double)rowCount / pageSize);
+            rowCountLabel.Content = $"Rows Returned: {rowCount}";
             LoadPageData();
-        }
-        private string[] getTextTitles(string textTitle)
-        {
-            string[] FixTextTitles = textTitle.Split(',');
-            // Trim spaces from the text titles
-            FixTextTitles = FixTextTitles.Select(item => item.Trim()).ToArray();
-            return FixTextTitles;
-        }
-
-        private string ConstructQueryWhere()
-        {
-            StringBuilder queryWhereBuilder = new();
-            if (textTitles.Length > 0)
-            {
-                string placeholders = string.Join(",", System.Linq.Enumerable.Repeat("?", textTitles.Length));
-                queryWhereBuilder.Append($"TextTitle IN ({placeholders})");
-            }
-            if (!string.IsNullOrEmpty(queryName))
-            {
-                if (queryWhereBuilder.Length > 0)
-                {
-                    queryWhereBuilder.Append(" AND ");
-                }
-                queryWhereBuilder.Append($"CalcFullName LIKE @queryName");
-            }
-            if (queryWhereBuilder.Length > 0)
-            {
-                queryWhereBuilder.Insert(0, "WHERE ");
-            }
-            return queryWhereBuilder.ToString();
         }
 
         private void LoadPageData()
         {
             try
             {
-                using (SQLiteConnection conn = new($"Data Source={dbPath};Version=3;"))
-                {
-                    conn.Open();
-                    string query = $"SELECT {queryFrom} {queryWhere} LIMIT {pageSize} OFFSET {pageIndex * pageSize}";
-                    using (SQLiteDataAdapter adapter = new(query, conn))
-                    {
-                        AddParameters(adapter.SelectCommand);
-                        DataTable dataTable = new();
-                        adapter.Fill(dataTable);
-                        dataGrid.ItemsSource = dataTable.DefaultView;
-                        pageNumberLabel.Content = $"Page {pageIndex + 1} of {totalPages} pages";
-                        SetPageButtons();
-                    }
-                }
+                dataGrid.ItemsSource = db.GetQueryPageRows(pageSize, pageIndex).DefaultView;
+                pageNumberLabel.Content = $"Page {pageIndex + 1} of {totalPages} pages";
+                SetPageButtons();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading page data: {ex.Message}");
             }
         }
-
-
-
         public void SetPageButtons()
-        {
+        { 
             NextPageButton.IsEnabled = pageIndex + 1 < totalPages;
             PreviousPageButton.IsEnabled = pageIndex > 0;
             ExportButton.IsEnabled = dataGrid.Items.Count > 0;
         }
 
-
-        private void CalculateTotalPages()
-        {
-            try
-            {
-                using (SQLiteConnection conn = new($"Data Source={dbPath};Version=3;"))
-                {
-                    conn.Open();
-
-                    string query = $"SELECT COUNT(*) FROM descriptions {queryWhere}";
-
-                    using (SQLiteCommand cmd = new(query, conn))
-                    {
-                        AddParameters(cmd);
-                        var result = cmd.ExecuteScalar();
-                        if (result != null && int.TryParse(result.ToString(), out int totalRows))
-                        {
-                            rowCount = totalRows;
-                            totalPages = (int)Math.Ceiling((double)totalRows / pageSize);
-
-                            rowCountLabel.Content = $"Rows Returned: {rowCount}";
-                        }
-                        else
-                        {
-                            MessageBox.Show("Query did not return a valid number.");
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error calculating total pages: {ex.Message}");
-            }
-        }
-
-        private void AddParameters(SQLiteCommand cmd)
-        {
-            if (textTitles.Length > 0)
-            {
-                for (int i = 0; i < textTitles.Length; i++)
-                {
-                    cmd.Parameters.AddWithValue($"@p{i}", textTitles[i]);
-                }
-            }
-
-            if (!string.IsNullOrEmpty(queryName))
-            {
-                cmd.Parameters.AddWithValue("@queryName", $"%{queryName}%");
-            }
-        }
-
         private void ExportQuery_Click(object sender, RoutedEventArgs e)
         {
-            try
+            SaveFileDialog saveFileDialog = new()
             {
-                using (SQLiteConnection conn = new($"Data Source={dbPath};Version=3;"))
-                {
+                Filter = "CSV Files (*.csv)|*.csv",
+                Title = "Export Data to CSV",
+                FileName = "ExportedData.csv"
+            };
 
-                    string query = $"SELECT {queryFrom} {queryWhere}";
-                    using (SQLiteDataAdapter adapter = new(query, conn))
-                    {
-                        AddParameters(adapter.SelectCommand);
-                        DataTable dataTable = new();
-                        adapter.Fill(dataTable);
-                        exportSelectedRows(dataTable);
-                    }
-
-                }
-            }
-            catch (Exception ex)
+            if (saveFileDialog.ShowDialog() == true)
             {
-                MessageBox.Show($"Error loading page data: {ex.Message}");
+                string filePath = saveFileDialog.FileName;
+                db.ExportQueryRows(filePath);
             }
         }
 
@@ -317,7 +186,7 @@ namespace FloraReview
 
                 if (selectedRows.Count > 0)
                 {
-                    Form3 form3 = new(dbPath, selectedRows, User);
+                    Form3 form3 = new(db, selectedRows, User);
                     form3.Show();
                 }
                 else

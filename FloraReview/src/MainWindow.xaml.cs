@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
 using System.Text.Json;
-using System.Data.SQLite;
+using SQLite3DB;
 using System.Data.Common;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
@@ -196,8 +196,8 @@ namespace FloraReview
 
         private void ExportData_Click(object sender, RoutedEventArgs e)
         {
-            string? connectionString = inputData["dbPath"];
-            string query = $"SELECT rowid, Id, CalcFullName, TextTitle, CoalescedText, FinalText, User, Status, Comment, ApprovedText FROM descriptions";
+           
+           
 
             if (MessageBox.Show("This will export the full descriptions table.", "Export Data?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
@@ -213,47 +213,11 @@ namespace FloraReview
 
                     if (saveFileDialog.ShowDialog() == true)
                     {
+                        string connectionString = inputData["dbPath"];
                         string filePath = saveFileDialog.FileName;
-
-                        using (SQLiteConnection conn = new($"Data Source={connectionString};Version=3;"))
-                        {
-                            conn.Open();
-                            using SQLiteCommand cmd = new(query, conn);
-                            using SQLiteDataReader reader = cmd.ExecuteReader();
-                            using StreamWriter writer = new(filePath);
-
-                            {
-                                // Write Header Row
-                                ReadOnlyCollection<DbColumn> schema = reader.GetColumnSchema();
-                                // Write each field in the row, separated by tabs
-                                StringBuilder stringBuilder = new();
-                                for (int i = 0; i < schema.Count; i++)
-                                {
-                                    stringBuilder.Append(schema[i].ColumnName);
-                                    if (i < schema.Count - 1)
-                                        stringBuilder.Append("\t");
-                                }
-                                writer.WriteLine(stringBuilder.ToString());
-                            }
-
-
-                            {
-                                //Write Data Rows
-                                while (reader.Read())
-                                {
-                                    // Write each field in the row, separated by tabs
-                                    StringBuilder stringBuilder = new();
-                                    for (int i = 0; i < reader.FieldCount; i++)
-                                    {
-                                        stringBuilder.Append(reader[i].ToString());
-                                        if (i < reader.FieldCount - 1)
-                                            stringBuilder.Append("\t");
-                                    }
-                                    writer.WriteLine(stringBuilder.ToString());
-                                }
-                            }
-                        }
-
+                        SQLite3db db = new(connectionString);
+                        db.ExportFullTable(filePath);
+                        db.Dispose();
                         MessageBox.Show($"Data successfully exported to {filePath}");
                     }
                 }
