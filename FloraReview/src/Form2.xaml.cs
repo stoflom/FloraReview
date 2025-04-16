@@ -33,19 +33,48 @@ namespace FloraReview
         }
 
 
-        public void Refresh()
-        {
-            rowCount = db.GetQueryRowCount();
-            totalPages = (int)Math.Ceiling((double)rowCount / pageSize);
-            rowCountLabel.Content = $"Rows Returned: {rowCount}";
-            LoadPageData();
-        }
-
-        private void LoadPageData()
+        public async void Refresh()
         {
             try
             {
-                dataGrid.ItemsSource = db.GetQueryPageRows(pageSize, pageIndex).DefaultView;
+                if (db == null)
+                {
+                    throw new InvalidOperationException("Database connection is not initialized.");
+                }
+
+                rowCount = await db.GetQueryRowCount();
+
+                totalPages = (int)Math.Ceiling((double)rowCount / pageSize);
+                rowCountLabel.Content = $"Rows Returned: {rowCount}";
+                LoadPageData();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error refreshing data: {ex.Message}");
+            }
+        }
+
+        private async void LoadPageData()
+        {
+            try
+            {
+                if (db == null)
+                {
+                    throw new InvalidOperationException("Database connection is not initialized.");
+                }
+
+                // Use Task.Run to run the database operation on a background thread
+                DataTable dataTable = await Task.Run(() => db.GetQueryPageRows(pageSize, pageIndex));
+
+                if (dataTable != null)
+                {
+                    dataGrid.ItemsSource = dataTable.DefaultView;
+                }
+                else
+                {
+                    MessageBox.Show("No data available to display.");
+                }
+
                 pageNumberLabel.Content = $"Page {pageIndex + 1} of {totalPages} pages";
                 SetPageButtons();
             }
@@ -63,6 +92,12 @@ namespace FloraReview
 
         private void ExportQuery_Click(object sender, RoutedEventArgs e)
         {
+            if (db == null)
+            {
+                MessageBox.Show("Database connection is not initialized.");
+                return; // Exit early if db is null
+            }
+
             SaveFileDialog saveFileDialog = new()
             {
                 Filter = "CSV Files (*.csv)|*.csv",

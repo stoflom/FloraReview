@@ -51,7 +51,7 @@ namespace FloraReview
 
 
 
-        public Form3(SQLite3db adb, List<DataRow> selectedRows, string aUser)
+        public Form3(SQLite3db? adb, List<DataRow> selectedRows, string? aUser)
         {
             InitializeComponent();
             db = adb;
@@ -87,15 +87,21 @@ namespace FloraReview
             logTextBox.Text = FixComment(currentComment);
             originalTextBox.Text = currentRow["CoalescedText"].ToString();
 
+
+            bool EnableDiscard =false;
+
             if (string.IsNullOrEmpty(currentRow["ApprovedText"]?.ToString()))
+                
             {
                 modifiedText = currentRow["FinalText"]?.ToString() ?? string.Empty;
                 InfoLabel.Content = "Loaded AI reviewed text.";
+                EnableDiscard = false; 
             }
             else
             {
                 modifiedText = currentRow["ApprovedText"]?.ToString() ?? string.Empty;
                 InfoLabel.Content = "Loaded saved text.";
+                EnableDiscard = true;
             }
             UpdateModifiedRichTextBox(modifiedText);
 
@@ -103,14 +109,14 @@ namespace FloraReview
 
             modified = false;
             SetStateControls();
+            DiscardButton.IsEnabled = EnableDiscard; // Enable or disable the button based on the condition
         }
 
         private void SetStateControls()
         {
             if (selectedRows != null && currentRow != null)
             {
-                string status = currentRow["Status"]?.ToString() ?? "open";
-                bool isClosed = (status == "close");
+                 bool isClosed = currentRow["Status"]?.ToString()?.ToUpper() == StatusClose;
                 modifiedRichTextBox.IsEnabled = !isClosed;
                 StatusLabel.Content = isClosed ? StatusClose : StatusOpen;
                 ReOpenButton.IsEnabled = isClosed;
@@ -118,8 +124,10 @@ namespace FloraReview
                 RevertButton.IsEnabled = !isClosed;
                 SaveButton.IsEnabled = !isClosed && modified;
                 UndoButton.IsEnabled = !isClosed && modified;
+                DiscardButton.IsEnabled = !isClosed && modified;
                 BackButton.IsEnabled = currentIndex > 0;
                 ForwardButton.IsEnabled = currentIndex < selectedRows.Count - 1;
+               
             }
         }
 
@@ -130,7 +138,7 @@ namespace FloraReview
             WordDiff2.DiffFunction(originalTextBox.Text, text, diffRichTextBox);
         }
 
-        private string? FixComment(string? comment)
+        private static string? FixComment(string? comment)
         {
             if (string.IsNullOrEmpty(comment))
             {
@@ -180,22 +188,22 @@ namespace FloraReview
             InfoLabel.Content = "Local changes reverted.";
         }
 
-        private void ReOpen_Click(object sender, RoutedEventArgs e)
+        private async void ReOpen_Click(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Do you want to re-open approved text?", "Re-open", MessageBoxButton.YesNo) == MessageBoxResult.No)
             {
                 return;
             }
-            SetStatus(StatusOpen);
+            await SetStatus(StatusOpen); 
         }
 
-        private void Approve_Click(object sender, RoutedEventArgs e)
+        private async void Approve_Click(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Do you want to approve the text?", "Approve", MessageBoxButton.YesNo) == MessageBoxResult.No)
             {
                 return;
             }
-            SetStatus(StatusClose);
+            await SetStatus(StatusClose);
         }
 
 
@@ -212,10 +220,11 @@ namespace FloraReview
                 UpdateModifiedRichTextBox(modifiedText);
                 modified = true;
                 SetStateControls();
+                DiscardButton.IsEnabled = false; // Disable the button after discarding
             }
         }
 
-        private int SetStatus(string newStatus)
+        private async Task<int> SetStatus(string newStatus)
         {
             int result = 0;
             try
@@ -233,18 +242,20 @@ namespace FloraReview
                 updates["Comment"] = currentComment;
                 updates["rowid"] = currentRowId;
 
-                if ((result = db.UpdateTable(updates)) > 0)
+                if (db != null)
                 {
+                    result = await Task.Run(() => db.UpdateTable(updates)); // Wrap synchronous method in Task.Run
+                    if (result > 0)
+                    {
+                        InfoLabel.Content = $"Status updated to {statusLabel}.";
 
-                    InfoLabel.Content = $"Status updated to {statusLabel}.";
+                        logTextBox.Text = FixComment(currentComment);
+                        currentStatus = newStatus;
+                        modified = false;
 
-                    logTextBox.Text = currentComment;
-                    currentStatus = newStatus;
-                    modified = false;
-
-                    UpdateCurrentRow();
-                    SetStateControls();
-
+                        UpdateCurrentRow();
+                        SetStateControls();
+                    }
                 }
             }
             catch (Exception ex)
@@ -254,9 +265,9 @@ namespace FloraReview
             return result;
         }
 
-        private void Save_Click(object sender, RoutedEventArgs e)
+        private async void Save_Click(object sender, RoutedEventArgs e)
         {
-            modified = SaveData() != 1;
+            modified = await SaveData() != 1; // Await the Task<int> returned by SaveData
             SetStateControls();
         }
 
@@ -267,7 +278,7 @@ namespace FloraReview
             WordDiff2.DiffFunction(originalTextBox.Text, textRange.Text, diffRichTextBox);
         }
 
-        private int SaveData()
+        private async Task<int> SaveData()
         {
             int result = 0;
             try
@@ -285,16 +296,19 @@ namespace FloraReview
                 updates["Comment"] = currentComment;
                 updates["rowid"] = currentRowId;
 
-                if ((result = db.UpdateTable(updates)) > 0)
+                if (db != null)
                 {
+                    result = await Task.Run(() => db.UpdateTable(updates)); // Wrap synchronous method in Task.Run
+                    if (result > 0)
+                    {
+                        InfoLabel.Content = $"Data saved.";
 
-                    InfoLabel.Content = $"Data saved.";
+                        logTextBox.Text = FixComment(currentComment);
+                        modified = false;
 
-                    logTextBox.Text = currentComment;
-                    modified = false;
-
-                    UpdateCurrentRow();
-                    SetStateControls();
+                        UpdateCurrentRow();
+                        SetStateControls();
+                    }
                 }
             }
             catch (Exception ex)
@@ -302,7 +316,6 @@ namespace FloraReview
                 MessageBox.Show($"Error saving: {ex.Message}");
             }
             return result;
-
         }
 
 
@@ -323,13 +336,16 @@ namespace FloraReview
         {
             if (modified && MessageBox.Show("Do you want to save first?", "Save Data?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                modified = SaveData() != 1;
-                SetStateControls();
+                Task.Run(async () =>
+                {
+                    modified = await SaveData() != 1; // Await the Task<int> returned by SaveData
+                    Dispatcher.Invoke(SetStateControls); // Ensure UI updates are done on the UI thread
+                });
                 ClearHighlights(modifiedRichTextBox);
             }
         }
 
-        private string AskForComment()
+        private static string AskForComment()
         {
             InputDialog inputDialog = new("Enter your comment:");
             return inputDialog.ShowDialog() == true ? inputDialog.Comment : string.Empty;
@@ -419,7 +435,7 @@ namespace FloraReview
         {
             modifiedRichTextBox.SpellCheck.IsEnabled = spellCheckBox.IsChecked == true;
         }
-        private string GetSelectedText(RichTextBox richTextBox)
+        private static string GetSelectedText(RichTextBox richTextBox)
         {
             TextRange selection = richTextBox.Selection;
             return !selection.IsEmpty ? selection.Text : string.Empty;
@@ -504,16 +520,16 @@ namespace FloraReview
         }
 
 
-        private void ApplyHighlight(TextPointer start, TextPointer end, Brush color)
+        private static void ApplyHighlight(TextPointer start, TextPointer end, Brush color)
         {
             TextRange highlightRange = new TextRange(start, end);
             highlightRange.ApplyPropertyValue(TextElement.BackgroundProperty, color);
         }
 
 
-        private TextPointer GetTextPointerAtOffset(TextPointer start, int offset)
+        private static TextPointer GetTextPointerAtOffset(TextPointer start, int offset)
         {
-            TextPointer current = start;
+            TextPointer? current = start;
             int count = 0;
 
             while (current != null && count < offset)
@@ -523,13 +539,13 @@ namespace FloraReview
                     int textLength = current.GetTextRunLength(LogicalDirection.Forward);
                     if (count + textLength > offset)
                     {
-                        return current.GetPositionAtOffset(offset - count);
+                        return current.GetPositionAtOffset(offset - count)!; 
                     }
                     count += textLength;
                 }
                 current = current.GetPositionAtOffset(1, LogicalDirection.Forward);
             }
-            return current;
+            return current!; 
         }
         protected override void OnClosed(EventArgs e)
         {

@@ -189,7 +189,7 @@ namespace SQLite3DB
             }
         }
 
-        public DataTable GetAllQueryRows()
+        public async Task<DataTable> GetAllQueryRows()
         {
             DataTable datatable = new();
             string query = $"SELECT rowid,* FROM {tableName} {ConstructQueryWhere()}";
@@ -199,7 +199,7 @@ namespace SQLite3DB
                 {
                     using SQLiteDataAdapter adapter = new(query, connection);
                     AddParameters(adapter.SelectCommand);
-                    adapter.Fill(datatable);
+                    await Task.Run(() => adapter.Fill(datatable));
                 }
                 catch (Exception ex)
                 {
@@ -214,7 +214,7 @@ namespace SQLite3DB
             return datatable;
         }
 
-        public int GetQueryRowCount()
+        public async Task<int> GetQueryRowCount()
         {
             string query = $"SELECT COUNT(*) FROM {tableName} {ConstructQueryWhere()}";
             if (connection != null && connection.State == ConnectionState.Open)
@@ -223,7 +223,7 @@ namespace SQLite3DB
                 {
                     AddParameters(cmd);
                     int totalRows = 0;
-                    var result = cmd.ExecuteScalar();
+                    object? result = await Task.Run(() => cmd.ExecuteScalar());
                     if (result != null && int.TryParse(result.ToString(), out totalRows))
                     {
                         return totalRows;

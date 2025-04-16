@@ -65,7 +65,8 @@ namespace FloraReview
                         {
                             foreach (ListBoxItem item in textTitleListBox.Items)
                             {
-                                item.IsSelected = Regex.IsMatch(textTitle, @"\b" + Regex.Escape(item.Content.ToString()) + @"\b");
+                                string content = item.Content.ToString() ?? string.Empty;
+                                item.IsSelected = Regex.IsMatch(textTitle, @"\b" + Regex.Escape(content) + @"\b");
                             }
                         }
                     }
@@ -194,14 +195,11 @@ namespace FloraReview
 
 
 
-        private void ExportData_Click(object sender, RoutedEventArgs e)
+        private async void ExportData_Click(object sender, RoutedEventArgs e)
         {
-           
-           
-
             if (MessageBox.Show("This will export the full descriptions table.", "Export Data?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                StatusTextLabel.Content = "Exporting database,please wait...";
+                StatusTextLabel.Content = "Exporting database, please wait...";
                 try
                 {
                     SaveFileDialog saveFileDialog = new()
@@ -213,12 +211,18 @@ namespace FloraReview
 
                     if (saveFileDialog.ShowDialog() == true)
                     {
-                        string connectionString = inputData["dbPath"];
-                        string filePath = saveFileDialog.FileName;
-                        SQLite3db db = new(connectionString);
-                        db.ExportFullTable(filePath);
-                        db.Dispose();
-                        MessageBox.Show($"Data successfully exported to {filePath}");
+                        if (inputData.TryGetValue("dbPath", out string? connectionString) && !string.IsNullOrEmpty(connectionString))
+                        {
+                            string filePath = saveFileDialog.FileName;
+                            SQLite3db db = new(connectionString);
+                            await Task.Run(() => db.ExportFullTable(filePath));
+                            db.Dispose();
+                            MessageBox.Show($"Data successfully exported to {filePath}");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Database path is invalid or not set.");
+                        }
                     }
                 }
                 catch (Exception ex)
