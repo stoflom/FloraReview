@@ -118,7 +118,7 @@ namespace SQLite3DB
         }
 
 
-        public int UpdateTable(Dictionary<string, string?> inputdata)
+        public async Task<int> UpdateTable(Dictionary<string, string?> inputdata)
         {
             if (connection != null && connection.State == ConnectionState.Open && inputdata != null)
             {
@@ -127,13 +127,13 @@ namespace SQLite3DB
                     string update = $"UPDATE {tableName} SET {ConstructUpdate(inputdata)}";
                     using SQLiteCommand cmd = new(update, connection);
                     AddUpdateParameters(cmd, inputdata);
-                    int rowsAffected = cmd.ExecuteNonQuery();
+                    int rowsAffected = await cmd.ExecuteNonQueryAsync();  
                     return rowsAffected;
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"Error updating data: {ex.Message}");
-                    throw; // Re-throw the exception for higher-level handling
+                    throw; // Re-throw the exception for higher-level handling  
                 }
             }
             else

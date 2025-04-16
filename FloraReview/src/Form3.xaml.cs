@@ -419,9 +419,7 @@ namespace FloraReview
                 findDialog.NextRequested += (searchText) => HighlightNextMatch(modifiedRichTextBox, searchText);
                 findDialog.PreviousRequested += (searchText) => HighlightPreviousMatch(modifiedRichTextBox, searchText);
                 findDialog.ClearRequested += () => ClearHighlights(modifiedRichTextBox);
-
                 findDialog.TextChanged += () => ClearHighlights(modifiedRichTextBox);
-
                 findDialog.Closed += (s, args) => findDialog = null;
                 findDialog.Show();
             }

@@ -5,7 +5,7 @@ namespace FloraReview
 {
     public partial class InputDialog : Window
     {
-        public string Comment { get; private set; }
+        public string Comment { get; private set; } = string.Empty;
 
         public InputDialog(string prompt)
         {

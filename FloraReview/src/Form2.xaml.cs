@@ -98,22 +98,25 @@ namespace FloraReview
                 return; // Exit early if db is null
             }
 
-            SaveFileDialog saveFileDialog = new()
+            if (MessageBox.Show($"{rowCount} will be exported to a csv file", "Export?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                Filter = "CSV Files (*.csv)|*.csv",
-                Title = "Export Data to CSV",
-                FileName = "ExportedData.csv"
-            };
+                SaveFileDialog saveFileDialog = new()
+                {
+                    Filter = "CSV Files (*.csv)|*.csv",
+                    Title = "Export Data to CSV",
+                    FileName = "ExportedData.csv"
+                };
 
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                string filePath = saveFileDialog.FileName;
-                db.ExportQueryRows(filePath);
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    string filePath = saveFileDialog.FileName;
+                    db.ExportQueryRows(filePath);
+                }
             }
         }
 
 
-        private int exportSelectedRows(DataTable dataTable)
+        private async Task<int> ExportSelectedRows(DataTable dataTable)
         {
             if (MessageBox.Show($"{dataTable.Rows.Count} will be exported to a csv file", "Export?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
@@ -131,22 +134,7 @@ namespace FloraReview
                         string filePath = saveFileDialog.FileName;
                         int i = 0;
                         using StreamWriter writer = new(filePath);
-                        {
-                            // Write Header Row usimg LINQ
-                            string[] columnNames = dataTable.Columns.Cast<DataColumn>()
-                                 .Select(static x => x.ColumnName)
-                                 .ToArray();
-                            writer.WriteLine(string.Join("\t", columnNames));
-                            // Write Data Rows
-                            foreach (DataRow row in dataTable.Rows)
-                            {
-                                string[] fields = row.ItemArray
-                                 .Select(x => x?.ToString() ?? string.Empty)
-                                 .ToArray();
-                                writer.WriteLine(string.Join("\t", fields));
-                                i++;
-                            }
-                        }
+                        i = await WriteRows(dataTable, writer);
 
                         MessageBox.Show($"{i} rows exported to {filePath}");
                         return i;
@@ -159,6 +147,38 @@ namespace FloraReview
                 }
             }
             return 0;
+        }
+
+        private async Task<int> WriteRows(DataTable dataTable, StreamWriter writer)
+        {
+            if (dataTable == null || writer == null)
+            {
+                throw new ArgumentNullException("DataTable or StreamWriter cannot be null.");
+            }
+
+            int rowCount = 0;
+
+            // Use Task.Run to perform the operation asynchronously
+            await Task.Run(() =>
+            {
+                // Write Header Row using LINQ
+                string[] columnNames = dataTable.Columns.Cast<DataColumn>()
+                    .Select(static x => x.ColumnName)
+                    .ToArray();
+                writer.WriteLine(string.Join("\t", columnNames));
+
+                // Write Data Rows
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    string[] fields = row.ItemArray
+                        .Select(x => x?.ToString() ?? string.Empty)
+                        .ToArray();
+                    writer.WriteLine(string.Join("\t", fields));
+                    rowCount++;
+                }
+            });
+
+            return rowCount;
         }
 
 
@@ -235,7 +255,7 @@ namespace FloraReview
             }
         }
 
-        private void ExportSelectedRows_Click(object sender, RoutedEventArgs e)
+        private async void ExportSelectedRows_Click(object sender, RoutedEventArgs e)
         {
             if (dataGrid.SelectedItems.Count > 0)
             {
@@ -260,7 +280,7 @@ namespace FloraReview
 
                 if (dataTable.Rows.Count > 0)
                 {
-                    exportSelectedRows(dataTable);
+                    await ExportSelectedRows(dataTable); // Add 'await' to ensure the method is awaited
                 }
                 else
                 {
@@ -271,7 +291,6 @@ namespace FloraReview
             {
                 MessageBox.Show("Please select at least one row to export.");
             }
-
         }
     }
 }
