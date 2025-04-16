@@ -144,7 +144,7 @@ namespace SQLite3DB
             return 0;
         }
 
-        private string ConstructUpdate(Dictionary<string, string>? inputdata)
+        private string ConstructUpdate(Dictionary<string, string?>? inputdata)
         {
             if (inputdata == null)
             {
@@ -165,7 +165,7 @@ namespace SQLite3DB
             }
             if (inputdata.TryGetValue("rowid", out string? rowid))
             {
-                updateBuilder.Append($" WHERE rowid = {@rowid}");
+                updateBuilder.Append($" WHERE rowid = {rowid}");
             }
             else
             {
@@ -306,12 +306,14 @@ namespace SQLite3DB
             StringBuilder queryWhereBuilder = new();
             if (inputData != null && inputData.TryGetValue("textTitle", out textTitles) && !string.IsNullOrEmpty(textTitles))
             {
-
-                if (textTitles != null && textTitles.Length > 0)
+                if (textTitles != null && textTitles.Length > 0) // Ensure textTitles is not null
                 {
                     string[]? textTitlesArray = FixTextTitles(textTitles);
-                    string placeholders = string.Join(",", System.Linq.Enumerable.Repeat("?", textTitlesArray.Length));
-                    queryWhereBuilder.Append($"TextTitle IN ({placeholders})");
+                    if (textTitlesArray != null) // Add null check for textTitlesArray
+                    {
+                        string placeholders = string.Join(",", System.Linq.Enumerable.Repeat("?", textTitlesArray.Length));
+                        queryWhereBuilder.Append($"TextTitle IN ({placeholders})");
+                    }
                 }
             }
             if (inputData != null && inputData.TryGetValue("queryName", out queryName) && !string.IsNullOrEmpty(queryName))
