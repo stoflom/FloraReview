@@ -98,7 +98,7 @@ namespace FloraReview
                 return; // Exit early if db is null
             }
 
-            if (MessageBox.Show($"{rowCount} will be exported to a csv file", "Export?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if (MessageBox.Show($"{rowCount} rows will be exported to a csv file", "Export?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
                 SaveFileDialog saveFileDialog = new()
                 {
