@@ -5,17 +5,18 @@ using System.Data.SQLite;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
+using System.Diagnostics;
 
 
 namespace SQLite3DB
 {
     //this class assumes we are working with the SQLite database schema schema.sql
-    public class SQLite3db
+    public class SQLite3db : IDisposable
     {
         private SQLiteConnection? connection;
         private const string tableName = "descriptions";
         private readonly string? dbPath = string.Empty;
-        private readonly Dictionary<string, string>? inputData;
+        private readonly Dictionary<string, string?>? inputData;
 
         public SQLite3db(string? adbPath)
         {
@@ -28,7 +29,8 @@ namespace SQLite3DB
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error opening database: {ex.Message}");
+                    Debug.WriteLine($"Error opening database: {ex.Message}");
+                    throw; // Re-throw the exception for higher-level handling
                 }
         }
 
@@ -46,11 +48,12 @@ namespace SQLite3DB
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error opening database: {ex.Message}");
+                Debug.WriteLine($"Error opening database: {ex.Message}");
+                throw; // Re-throw the exception for higher-level handling
             }
         }
 
-        private string[]? fixTextTitles(string? textTitle)
+        private string[]? FixTextTitles(string? textTitle)
         {
             string[]? FixTextTitles = Array.Empty<string>();
             if (textTitle != null && textTitle.Length > 0)
@@ -68,59 +71,60 @@ namespace SQLite3DB
             {
                 try
                 {
-                    using SQLiteCommand cmd = new(@"SELECT * from {tableName} ", connection);
+                    using SQLiteCommand cmd = new($"SELECT * from {tableName} ", connection);
                     using SQLiteDataReader reader = cmd.ExecuteReader();
                     using StreamWriter writer = new(filePath);
-                    {
-                        // Write Header Row
-                        ReadOnlyCollection<DbColumn> schema = reader.GetColumnSchema();
-                        // Write each field in the row, separated by tabs
-                        StringBuilder header = new();
-                        for (int i = 0; i < schema.Count; i++)
-                        {
-                            header.Append(schema[i].ColumnName);
-                            if (i < schema.Count - 1)
-                            {
-                                header.Append("\t");
-                            }
-
-                        }
-                        writer.WriteLine(header.ToString());
-                    }
-                    {
-                        //Write Data Rows
-                        while (reader.Read())
-                        {
-                            // Write each field in the row, separated by tabs
-                            StringBuilder stringBuilder = new();
-                            for (int i = 0; i < reader.FieldCount; i++)
-                            {
-                                stringBuilder.Append(reader[i].ToString());
-                                if (i < reader.FieldCount - 1)
-                                    stringBuilder.Append("\t");
-                            }
-                            writer.WriteLine(stringBuilder.ToString());
-                        }
-                    }
+                    WriteDataToFile(reader, writer);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error exporting data: {ex.Message}");
+                    Debug.WriteLine($"Error exporting data: {ex.Message}");
+                    throw; // Re-throw the exception for higher-level handling
                 }
             }
             else
             {
-                MessageBox.Show("Error: database connection is not open.");
+                Debug.WriteLine("Error: database connection is not open.");
             }
         }
+
+        private void WriteDataToFile(SQLiteDataReader reader, StreamWriter writer)
+        {
+            // Write Header Row
+            ReadOnlyCollection<DbColumn> schema = reader.GetColumnSchema();
+            StringBuilder header = new();
+            for (int i = 0; i < schema.Count; i++)
+            {
+                header.Append(schema[i].ColumnName);
+                if (i < schema.Count - 1)
+                {
+                    header.Append("\t");
+                }
+            }
+            writer.WriteLine(header.ToString());
+
+            // Write Data Rows
+            while (reader.Read())
+            {
+                StringBuilder stringBuilder = new();
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    stringBuilder.Append(reader[i].ToString());
+                    if (i < reader.FieldCount - 1)
+                        stringBuilder.Append("\t");
+                }
+                writer.WriteLine(stringBuilder.ToString());
+            }
+        }
+
 
         public int UpdateTable(Dictionary<string, string?> inputdata)
         {
             if (connection != null && connection.State == ConnectionState.Open && inputdata != null)
-            { 
+            {
                 try
                 {
-                    string update = @"UPDATE {tableName} SET {ConstructUpdate(inputdata)}";
+                    string update = $"UPDATE {tableName} SET {ConstructUpdate(inputdata)}";
                     using SQLiteCommand cmd = new(update, connection);
                     AddUpdateParameters(cmd, inputdata);
                     int rowsAffected = cmd.ExecuteNonQuery();
@@ -128,13 +132,14 @@ namespace SQLite3DB
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error updating data: {ex.Message}");
+                    Debug.WriteLine($"Error updating data: {ex.Message}");
+                    throw; // Re-throw the exception for higher-level handling
                 }
             }
             else
             {
-                MessageBox.Show("Error: database connection/query broken.");
-            }   
+                Debug.WriteLine("Error: database connection/query broken.");
+            }
 
             return 0;
         }
@@ -148,14 +153,23 @@ namespace SQLite3DB
             StringBuilder updateBuilder = new();
             foreach (var item in inputdata)
             {
-                if (item.Key != "textTitle")
+                if (item.Key == "rowid")
                 {
-                    updateBuilder.Append($"{item.Key} = @{item.Key}, ");
+                    continue; // Skip the textTitle field
                 }
+                updateBuilder.Append($"{item.Key} = @{item.Key}, ");
             }
             if (updateBuilder.Length > 0)
             {
                 updateBuilder.Remove(updateBuilder.Length - 2, 2); // Remove the last comma and space
+            }
+            if (inputdata.TryGetValue("rowid", out string? rowid))
+            {
+                updateBuilder.Append($" WHERE rowid = {@rowid}");
+            }
+            else
+            {
+                throw new ArgumentException("rowid is required for the update operation.");
             }
             return updateBuilder.ToString();
         }
@@ -178,7 +192,7 @@ namespace SQLite3DB
         public DataTable GetAllQueryRows()
         {
             DataTable datatable = new();
-            string query = @"SELECT * FROM {tableName} WHERE {ConstructQueryWhere()}";
+            string query = $"SELECT rowid,* FROM {tableName} {ConstructQueryWhere()}";
             if (connection != null && connection.State == ConnectionState.Open)
             {
                 try
@@ -189,19 +203,20 @@ namespace SQLite3DB
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error retrieving data: {ex.Message}");
+                    Debug.WriteLine($"Error retrieving data: {ex.Message}");
+                    throw; // Re-throw the exception for higher-level handling
                 }
             }
             else
             {
-                MessageBox.Show("Error: database connection/query broken.");
+                Debug.WriteLine("Error: database connection/query broken.");
             }
             return datatable;
         }
 
         public int GetQueryRowCount()
         {
-            string query = @"SELECT COUNT(*) FROM {tableName} WHERE {ConstructQueryWhere()}";
+            string query = $"SELECT COUNT(*) FROM {tableName} {ConstructQueryWhere()}";
             if (connection != null && connection.State == ConnectionState.Open)
             {
                 using (SQLiteCommand cmd = new(query, connection))
@@ -215,20 +230,20 @@ namespace SQLite3DB
                     }
                     else
                     {
-                        MessageBox.Show($"Query did not return a valid number: {result}");
+                        Debug.WriteLine($"Query did not return a valid number: {result}");
                     }
                 }
             }
             else
             {
-                MessageBox.Show("Error: database connection/query broken.");
+                Debug.WriteLine("Error: database connection/query broken.");
             }
             return 0;
         }
 
         public void ExportQueryRows(string filePath)
         {
-            string query = @"SELECT * FROM {tableName} WHERE {ConstructQueryWhere()}";
+            string query = $"SELECT rowid,* FROM {tableName} {ConstructQueryWhere()}";
             if (connection != null && connection.State == ConnectionState.Open)
             {
                 try
@@ -238,46 +253,18 @@ namespace SQLite3DB
                     {
                         using SQLiteDataReader reader = cmd.ExecuteReader();
                         using StreamWriter writer = new(filePath);
-                        {
-                            // Write Header Row
-                            ReadOnlyCollection<DbColumn> schema = reader.GetColumnSchema();
-                            // Write each field in the row, separated by tabs
-                            StringBuilder header = new();
-                            for (int i = 0; i < schema.Count; i++)
-                            {
-                                header.Append(schema[i].ColumnName);
-                                if (i < schema.Count - 1)
-                                {
-                                    header.Append("\t");
-                                }
-
-                            }
-                            writer.WriteLine(header.ToString());
-
-                            //Write Data Rows
-                            while (reader.Read())
-                            {
-                                // Write each field in the row, separated by tabs
-                                StringBuilder stringBuilder = new();
-                                for (int i = 0; i < reader.FieldCount; i++)
-                                {
-                                    stringBuilder.Append(reader[i].ToString());
-                                    if (i < reader.FieldCount - 1)
-                                        stringBuilder.Append("\t");
-                                }
-                                writer.WriteLine(stringBuilder.ToString());
-                            }
-                        }
+                        WriteDataToFile(reader, writer);
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error exporting data: {ex.Message}");
+                    Debug.WriteLine($"Error exporting data: {ex.Message}");
+                    throw; // Re-throw the exception for higher-level handling
                 }
             }
             else
             {
-                MessageBox.Show("Error: database connection/query broken.");
+                Debug.WriteLine("Error: database connection/query broken.");
             }
 
         }
@@ -290,7 +277,7 @@ namespace SQLite3DB
             {
                 try
                 {
-                    string query = @"SELECT * FROM {tableName} WHERE {ConstructQueryWhere()}"
+                    string query = $"SELECT rowid,* FROM {tableName} {ConstructQueryWhere()}"
                         + $" LIMIT {pageSize} OFFSET {pageIndex * pageSize}";
                     using (SQLiteDataAdapter adapter = new(query, connection))
                     {
@@ -300,12 +287,13 @@ namespace SQLite3DB
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error loading page data: {ex.Message}");
+                    Debug.WriteLine($"Error loading page data: {ex.Message}");
+                    throw; // Re-throw the exception for higher-level handling
                 }
             }
             else
             {
-                MessageBox.Show("Error: database connection/query broken.");
+                Debug.WriteLine("Error: database connection/query broken.");
             }
             return dataTable;
         }
@@ -316,16 +304,17 @@ namespace SQLite3DB
             string? textTitles = string.Empty;
             string? queryName = string.Empty;
             StringBuilder queryWhereBuilder = new();
-            if (inputData != null && !inputData.TryGetValue("textTitles", out textTitles) && string.IsNullOrEmpty(textTitles))
+            if (inputData != null && inputData.TryGetValue("textTitle", out textTitles) && !string.IsNullOrEmpty(textTitles))
             {
 
                 if (textTitles != null && textTitles.Length > 0)
                 {
-                    string placeholders = string.Join(",", System.Linq.Enumerable.Repeat("?", textTitles.Length));
+                    string[]? textTitlesArray = FixTextTitles(textTitles);
+                    string placeholders = string.Join(",", System.Linq.Enumerable.Repeat("?", textTitlesArray.Length));
                     queryWhereBuilder.Append($"TextTitle IN ({placeholders})");
                 }
             }
-            if (inputData != null && !inputData.TryGetValue("queryName", out queryName) && string.IsNullOrEmpty(queryName))
+            if (inputData != null && inputData.TryGetValue("queryName", out queryName) && !string.IsNullOrEmpty(queryName))
             {
                 if (queryWhereBuilder.Length > 0)
                 {
@@ -345,7 +334,7 @@ namespace SQLite3DB
             {
                 throw new ArgumentNullException(nameof(inputData), "Input data cannot be null.");
             }
-            string[]? textTitlesArray = fixTextTitles(inputData["textTitles"]);
+            string[]? textTitlesArray = FixTextTitles(inputData["textTitle"]);
             if (textTitlesArray != null && textTitlesArray.Length > 0)
             {
                 for (int i = 0; i < textTitlesArray.Length; i++)
@@ -361,6 +350,7 @@ namespace SQLite3DB
 
         }
 
+
         public void Dispose()
         {
             if (connection != null && connection.State == ConnectionState.Open)
@@ -370,10 +360,6 @@ namespace SQLite3DB
             }
         }
 
-        ~SQLite3db()
-        {
-            Dispose();
-        }
 
     }
 }
