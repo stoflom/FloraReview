@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.Text.RegularExpressions;
 using System.Windows.Media; // Use System.Windows.Media for colors in WPF
 using System.Windows.Controls; // Use System.Windows.Controls for WPF RichTextBox
-using System.Windows.Documents; // Use System.Windows.Documents for TextRange and TextElement
+using System.Windows.Documents;
+using System.Windows;
 
 public class WordDiff2
 {
@@ -37,7 +37,7 @@ public class WordDiff2
 
                 if (oCurrent == mCurrent)
                 {
-                    AppendText(richTextBox, oCurrent, Colors.Black, true);
+                    AppendText(richTextBox, oCurrent, Operation.Same, true);
                     originalList.RemoveAt(0);
                     modifiedList.RemoveAt(0);
                     lastOperation = Operation.Same;
@@ -62,13 +62,13 @@ public class WordDiff2
                         {
                             if (oCurrent != null)
                             {
-                                AppendText(richTextBox, oCurrent, Colors.Red, lastOperation == Operation.Insert);
+                                AppendText(richTextBox, oCurrent, Operation.Delete, lastOperation == Operation.Insert);
                                 originalList.RemoveAt(0);
                                 lastOperation = Operation.Delete;
                             }
                             if (mCurrent != null)
                             {
-                                AppendText(richTextBox, mCurrent, Colors.Green, lastOperation == Operation.Delete);
+                                AppendText(richTextBox, mCurrent, Operation.Insert, lastOperation == Operation.Delete);
                                 modifiedList.RemoveAt(0);
                                 lastOperation = Operation.Insert;
                             }
@@ -95,7 +95,7 @@ public class WordDiff2
     {
         for (int i = 0; i < count; i++)
         {
-            AppendText(richTextBox, list[0], color, addSpace);
+            AppendText(richTextBox, list[0], Operation.Insert, addSpace);
             list.RemoveAt(0);
         }
     }
@@ -104,12 +104,12 @@ public class WordDiff2
     {
         for (int i = 0; i < count; i++)
         {
-            AppendText(richTextBox, list[0], color, addSpace);
+            AppendText(richTextBox, list[0], Operation.Delete, addSpace);
             list.RemoveAt(0);
         }
     }
 
-    private static void AppendText(RichTextBox richTextBox, string? text, Color color, bool addSpace)
+    private static void AppendText(RichTextBox richTextBox, string? text, Operation op, bool addSpace)
     {
         if (text != null)
         {
@@ -117,7 +117,23 @@ public class WordDiff2
             {
                 Text = text + (addSpace ? " " : "")
             };
-            textRange.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(color));
+
+            switch (op)
+            {
+                case Operation.Same:
+                    textRange.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Black));
+                    textRange.ApplyPropertyValue(Inline.TextDecorationsProperty, null);
+                    break;
+                case Operation.Insert:
+                    textRange.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Green));
+                    textRange.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline);
+                    break;
+                case Operation.Delete:
+                    textRange.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Red));
+                    textRange.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Strikethrough);
+                    break;
+            }
+            
         }
     }
 }

@@ -257,7 +257,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:FloraReview"
         "ProductCode" = "8:{8C6A92BA-5542-4EC0-901F-0DB6B6D7F3AD}"
-        "PackageCode" = "8:{3619E404-99DE-465C-9756-9BE4490CF7E0}"
+        "PackageCode" = "8:{ADD05A3F-BADC-4828-A475-6F52131BD0AB}"
         "UpgradeCode" = "8:{B48D0647-141B-42F3-B9AC-F0CFF1DFECF7}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
