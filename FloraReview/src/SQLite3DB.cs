@@ -165,7 +165,7 @@ namespace SQLite3DB
             }
             if (inputdata.TryGetValue("rowid", out string? rowid))
             {
-                updateBuilder.Append($" WHERE rowid = {rowid}");
+                updateBuilder.Append($" WHERE rowid = {@rowid}");
             }
             else
             {
