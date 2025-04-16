@@ -234,7 +234,7 @@ namespace FloraReview
                 Dictionary<string, string?> updates = new();
 
                 string userComment = AskForComment();
-                currentComment += $"{statusLabel} {DateTime.Now} {User}: {userComment}";
+                currentComment += $"ǁ{statusLabel} {DateTime.Now} {User}: {userComment}";
 
                 updates["ApprovedText"] = updatedText;
                 updates["Reviewer"] = User;
@@ -288,7 +288,7 @@ namespace FloraReview
                 Dictionary<string, string?> updates = new();
 
                 string userComment = AskForComment();
-                currentComment += $"{statusLabel} {DateTime.Now} {User}: {userComment}";
+                currentComment += $"ǁ{statusLabel} {DateTime.Now} {User}: {userComment}";
 
                 updates["ApprovedText"] = updatedText;
                 updates["Reviewer"] = User;
