@@ -2,6 +2,7 @@
 using FloraReview;
 using Microsoft.Win32;
 using System;
+using System.IO;
 using System.Data;
 using System.Data.SQLite;
 using System.Windows;
@@ -552,7 +553,22 @@ namespace FloraReview
             saveRow();
         }
 
+        private void modifiedRichTextBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            //On windows 11 it seems this CustomDictionary, although loaded, is not used.
+            //Instead the words must be added via word/excel->file>options>proofing>custom dictionaries.
 
+            string appName = "FloraReview";
+            IList dictionaries = SpellCheck.GetCustomDictionaries(modifiedRichTextBox);
+            string dicPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appName, "WordList.lex");
+            if (File.Exists(dicPath))
+            {
+                // Construct a valid URI from the file path
+                Uri dicUri = new Uri(dicPath, UriKind.Absolute);
+                // Add the URI to your dictionaries collection
+                dictionaries.Add(dicUri);
+            }
+        }
     }
 }
 

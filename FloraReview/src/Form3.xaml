@@ -106,7 +106,7 @@
                 Grid.Row="1" Grid.ColumnSpan="3"    
                 Name="modifiedRichTextBox" MinHeight="100" VerticalScrollBarVisibility="Auto" 
                 SpellCheck.IsEnabled="False" AcceptsReturn="False" AcceptsTab="False"
-                MouseWheel="modifiedRichTextBox_MouseWheel" TextChanged="modifiedRichTextBox_TextChanged" VerticalContentAlignment="Top" ScrollViewer.CanContentScroll="True"  >
+                MouseWheel="modifiedRichTextBox_MouseWheel" TextChanged="modifiedRichTextBox_TextChanged" VerticalContentAlignment="Top" ScrollViewer.CanContentScroll="True" Loaded="modifiedRichTextBox_Loaded"  >
                 <RichTextBox.CommandBindings>
                     <CommandBinding Command="ApplicationCommands.Find" Executed="FindCommand_Executed" />
                 </RichTextBox.CommandBindings>
