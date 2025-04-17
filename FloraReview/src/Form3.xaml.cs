@@ -553,22 +553,24 @@ namespace FloraReview
             saveRow();
         }
 
-        private void modifiedRichTextBox_Loaded(object sender, RoutedEventArgs e)
-        {
-            //On windows 11 it seems this CustomDictionary, although loaded, is not used.
-            //Instead the words must be added via word/excel->file>options>proofing>custom dictionaries.
-
-            string appName = "FloraReview";
-            IList dictionaries = SpellCheck.GetCustomDictionaries(modifiedRichTextBox);
-            string dicPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appName, "WordList.lex");
-            if (File.Exists(dicPath))
-            {
-                // Construct a valid URI from the file path
-                Uri dicUri = new Uri(dicPath, UriKind.Absolute);
-                // Add the URI to your dictionaries collection
-                dictionaries.Add(dicUri);
-            }
-        }
+        //private void modifiedRichTextBox_Loaded(object sender, RoutedEventArgs e)
+        //{
+        //    //Seems the dictionary must be encoded UTF16LE, starts with FFFE, and have .dic extension. (word dialog)
+        //    //On windows 11 it seems this CustomDictionary, although loaded, is not used.
+        //    //Instead the words must be added via word/excel->options>proofing>custom dictionaries
+        //    // to RoamingCustom.dic, at C:\Users\<user>\AppData\Roaming\Microsoft\Office\16.0\4eb1ff8a\Proofing
+        //    // Seealso: https://answers.microsoft.com/en-us/msoffice/forum/all/what-is-the-purpose-of-defaultdic-since-1-the/d4c69fa8-f703-41fb-bab8-0f040fd161c9
+        //    string appName = "FloraReview";
+        //    IList dictionaries = SpellCheck.GetCustomDictionaries(modifiedRichTextBox);
+        //    string dicPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appName, "WordList.dic");
+        //    if (File.Exists(dicPath))
+        //    {
+        //        // Construct a valid URI from the file path
+        //        Uri dicUri = new Uri(dicPath, UriKind.Absolute);
+        //        // Add the URI to your dictionaries collection
+        //        dictionaries.Add(dicUri);
+        //    }
+        //}
     }
 }
 

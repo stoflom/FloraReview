@@ -34,10 +34,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\WordList.lex" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Page Remove="src\App.xaml" />
   </ItemGroup>
 
@@ -49,7 +45,6 @@
     <Content Include="Resources\AppIcon.ico">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\WordList.lex" />
   </ItemGroup>
 
   <ItemGroup>
