@@ -15,8 +15,8 @@ namespace FloraReview
         {
             InitializeComponent();
             SearchTextBox.Text = initialText;
-
             SearchTextBox.TextChanged += (s, e) => TextChanged?.Invoke();
+            SearchTextBox.Focus();
         }
 
         private void FindButton_Click(object sender, RoutedEventArgs e)

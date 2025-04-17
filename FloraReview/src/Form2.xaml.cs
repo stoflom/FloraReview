@@ -213,6 +213,7 @@ namespace FloraReview
 
         private void dataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            //This will first select the clicked row, so only 1 row is selected
             ReviewSelectedRows_Click(sender, e);
         }
 

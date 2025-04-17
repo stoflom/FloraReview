@@ -67,6 +67,7 @@ namespace FloraReview
                 this.Close();
                 return;
             }
+            modifiedRichTextBox.Focus();
         }
 
         private void LoadCurrentRow()
