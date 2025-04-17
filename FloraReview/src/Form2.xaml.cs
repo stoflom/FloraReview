@@ -84,7 +84,7 @@ namespace FloraReview
             }
         }
         public void SetPageButtons()
-        { 
+        {
             NextPageButton.IsEnabled = pageIndex + 1 < totalPages;
             PreviousPageButton.IsEnabled = pageIndex > 0;
             ExportButton.IsEnabled = dataGrid.Items.Count > 0;
@@ -293,6 +293,20 @@ namespace FloraReview
                 MessageBox.Show("Please select at least one row to export.");
             }
         }
+        private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.OemPeriod || e.Key == System.Windows.Input.Key.Right)
+            {
+                // Call NextPage_Click when '>' or Right Arrow is pressed
+                NextPage_Click(sender, e);
+            }
+            else if (e.Key == System.Windows.Input.Key.OemComma || e.Key == System.Windows.Input.Key.Left)
+            {
+                // Call PreviousPage_Click when '<' or Left Arrow is pressed
+                PreviousPage_Click(sender, e);
+            }
+        }
+
     }
 }
 
