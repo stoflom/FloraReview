@@ -555,12 +555,12 @@ namespace FloraReview
 
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.OemPeriod || e.Key == System.Windows.Input.Key.Right)
+            if (e.Key == System.Windows.Input.Key.Right)
             {
                 // Call NextPage_Click when '>' or Right Arrow is pressed
                 Forward_Click(sender, e);
             }
-            else if (e.Key == System.Windows.Input.Key.OemComma || e.Key == System.Windows.Input.Key.Left)
+            else if ( e.Key == System.Windows.Input.Key.Left)
             {
                 // Call PreviousPage_Click when '<' or Left Arrow is pressed
                 Back_Click(sender, e);
