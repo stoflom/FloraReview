@@ -21,6 +21,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_6597D715553F4C36BE7B2C9B332F6075"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_879C96CC077B4AE09A8B1E846C4DBC40"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -34,6 +40,12 @@
         "Entry"
         {
         "MsmKey" = "8:_DF5B0AF6D66B48AFADEA3A2F5961E09B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E8F145EF8D704084AF199B9119F0F512"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -140,6 +152,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6597D715553F4C36BE7B2C9B332F6075"
+            {
+            "SourcePath" = "8:..\\FloraReview\\Resources\\ImpalaLily-ShingwedziKNP.jpg"
+            "TargetName" = "8:ImpalaLily-ShingwedziKNP.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_35D6990F76F14D8C93E0103D167F6981"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_879C96CC077B4AE09A8B1E846C4DBC40"
             {
             "SourcePath" = "8:..\\README.md"
@@ -177,6 +209,26 @@
             "PackageAs" = "3:1"
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E8F145EF8D704084AF199B9119F0F512"
+            {
+            "SourcePath" = "8:..\\FloraReview\\Resources\\ImpalaLily-ShingwedziKNP.jpg"
+            "TargetName" = "8:ImpalaLily-ShingwedziKNP.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_35D6990F76F14D8C93E0103D167F6981"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
@@ -452,7 +504,7 @@
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
                             "Setting" = "3:2"
-                            "Value" = "8:This software is open source freeware and is supplied with no guarantee."
+                            "Value" = "8:This software is open source freeware and is supplied with no guarantee.  See: https://github.com/stoflom/FloraReview"
                             "DefaultValue" = "8:#1202"
                             "UsePlugInResources" = "11:TRUE"
                             }
@@ -644,7 +696,7 @@
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
                             "Setting" = "3:2"
-                            "Value" = "8:This software is open source freeware and is supplied with no guarantee."
+                            "Value" = "8:This software is open source freeware and is supplied with no guarantee. See: https://github.com/stoflom/FloraReview"
                             "DefaultValue" = "8:#1202"
                             "UsePlugInResources" = "11:TRUE"
                             }
