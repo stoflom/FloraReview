@@ -1,83 +1,75 @@
 ﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="FloraReview" Height="500" Width="850"
-        x:Class="FloraReview.MainWindow"
-        Style="{StaticResource MaterialDesignWindow}"
-        ResizeMode="NoResize">
-    <Grid Margin="10,10,10,10" >
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="30" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+       Title="FloraReview" Height="500" Width="850"
+       x:Class="FloraReview.MainWindow"
+       Style="{StaticResource MaterialDesignWindow}"
+       ResizeMode="NoResize">
+   <Grid Margin="10,10,10,10" >
+       <Grid.RowDefinitions>
+           <RowDefinition Height="Auto" />
+           <RowDefinition Height="50" />
+           <RowDefinition Height="50" />
+           <RowDefinition Height="Auto" />
+           <RowDefinition Height="Auto" />
+           <RowDefinition Height="50" />
+           <RowDefinition Height="30" />
+       </Grid.RowDefinitions>
+       <Grid.ColumnDefinitions>
+           <ColumnDefinition Width="Auto" />
+           <ColumnDefinition Width="*" />
+           <ColumnDefinition Width="Auto" />
+       </Grid.ColumnDefinitions>
 
-        <TextBlock Name="TitleTextBlock" Text="FloraReview" FontSize="24" FontWeight="Bold" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,10,0,0" />
-        <Label x:Name="AppVersion" Content="Version: 1" FontSize="14" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="2"  Margin="0,5,0,0" />
+       <TextBlock Name="TitleTextBlock" Text="FloraReview" FontSize="24" FontWeight="Bold" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,10,0,0" />
+       <Label x:Name="AppVersionLabel" Content="Version" FontSize="14" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="2"  Margin="0,5,0,0" />
 
-        <Label x:Name="UserLabel" Content="User:" FontSize="14" VerticalContentAlignment="Center" 
-               Grid.Row="1" Grid.Column="0"  Margin="10,20,0,0" HorizontalContentAlignment="Right"/>
-        <TextBox x:Name="UserTextBox" Text="User" FontSize="14" FontWeight="DemiBold" Height="25" 
-                 ToolTip="Your name as reviewer"
-                 Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="5,20,0,0" TextChanged="User_TextChanged" />
+       <Label x:Name="UserLabel" Content="User:" FontSize="14" VerticalContentAlignment="Center" 
+              Grid.Row="1" Grid.Column="0"  Margin="10,20,0,0" HorizontalContentAlignment="Right"/>
+       <TextBox x:Name="UserTextBox" Text="User" FontSize="14" FontWeight="DemiBold" Height="25" 
+                ToolTip="Your name as reviewer"
+                Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="5,20,0,0" TextChanged="User_TextChanged" />
 
-        <Label Name="dbName" Content="Database Name:"  Grid.Row="2" Grid.Column="0"  HorizontalContentAlignment="Right" VerticalAlignment="Center"/>
-        <TextBox x:Name="dbPathTextBox" Grid.Row="2" Grid.Column="1"  TextChanged="dbPathTextBox_TextChanged" VerticalAlignment="Center" />
+       <Label Name="dbName" Content="Database Name:"  Grid.Row="2" Grid.Column="0"  HorizontalContentAlignment="Right" VerticalAlignment="Center"/>
+       <TextBox x:Name="dbPathTextBox" Grid.Row="2" Grid.Column="1"  TextChanged="dbPathTextBox_TextChanged" VerticalAlignment="Center" />
 
-      
+       <Button x:Name="SelectFileButton" Content="Select Database" Grid.Row="2" Grid.Column="2" Click="SelectFile_Click"
+       Style="{StaticResource IconButtonStyle}" Tag="Folder" ToolTip="Choose File" />
 
-        <Button x:Name="SelectFileButton" Content="Select Database" Grid.Row="2" Grid.Column="2" Click="SelectFile_Click"
-        Style="{StaticResource IconButtonStyle}" Tag="Folder" ToolTip="Choose File" />
+       <Label x:Name="QueryNameLabel" Content="Scientific Name Query:"
+              VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" 
+              Margin="10,20,0,10" HorizontalContentAlignment="Right"/>
+       <TextBox x:Name="queryNameTextBox" Height="25" Grid.Row="3"
+                ToolTip="Phrases to find, e.g. Acac%erio (%->any text), blank->all"
+                Grid.Column="1"  Grid.ColumnSpan="2" Margin="5,20,0,10" />
 
-        <Label x:Name="QueryNameLabel" Content="Scientific Name Query:"
-               VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="0" 
-               Margin="10,20,0,10" HorizontalContentAlignment="Right"/>
-        <TextBox x:Name="queryNameTextBox" Height="25" Grid.Row="3"
-                 ToolTip="Phrases to find, e.g. Acac%erio (%->any text), blank->all"
-                 Grid.Column="1"  Grid.ColumnSpan="2" Margin="5,20,0,10" />
+       <Label x:Name="TextTypeLabel" Content="TextTitle Query:" HorizontalAlignment="Right"
+              Grid.Row="4" Grid.Column="0"  Margin="10,5,0,0" HorizontalContentAlignment="Right" Height="25"/>
+       <ListBox x:Name="textTitleListBox" SelectionMode="Multiple" Grid.Row="4" Grid.Column="1" 
+                ToolTip="Select TextTitles to include, blank->all" Width="100" 
+                Margin="5,15,186,20" HorizontalAlignment="Left" >
+           <ListBoxItem Content="Morphology" />
+           <ListBoxItem Content="Diagnostic" />
+           <ListBoxItem Content="Distribution" />
+           <ListBoxItem Content="Habitat" />
+       </ListBox>
 
-        <Label x:Name="TextTypeLabel" Content="TextTitle Query:" HorizontalAlignment="Right"
-               Grid.Row="4" Grid.Column="0"  Margin="10,5,0,0" HorizontalContentAlignment="Right" Height="25"/>
-        <ListBox x:Name="textTitleListBox" SelectionMode="Multiple" Grid.Row="4" Grid.Column="1" 
-                 ToolTip="Select TextTitles to include, blank->all" Width="100" 
-                 Margin="5,15,186,20" HorizontalAlignment="Left" >
-            <ListBoxItem Content="Morphology" />
-            <ListBoxItem Content="Diagnostic" />
-            <ListBoxItem Content="Distribution" />
-            <ListBoxItem Content="Habitat" />
-        </ListBox>
+       <StackPanel  Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" >
+           <Button x:Name="LoadButton" Content="Load Data" Grid.Row="5" Grid.Column="0" Click="LoadData_Click"
+       Style="{StaticResource IconButtonStyle}" Tag="Database" ToolTip="Load data from database" />
 
-        
-        <StackPanel  Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" >
-           
-            
-            <Button x:Name="LoadButton" Content="Load Data" Grid.Row="5" Grid.Column="0" Click="LoadData_Click"
-        Style="{StaticResource IconButtonStyle}" Tag="Database" ToolTip="Load data from database" />
-
-            <Button x:Name="ExportButton" Content="Export DB" Grid.Row="5" Grid.Column="1" Click="ExportData_Click"
-        Style="{StaticResource IconButtonStyle}" Tag="DatabaseArrowRight" ToolTip="Export full descriptions table" />
-
-        </StackPanel>
-        
-        <Button x:Name="QuitButton" Content="Close" Grid.Row="5" Grid.Column="2" Click="QuitApp_Click"
-        Style="{StaticResource IconButtonStyle}" Tag="Close" ToolTip="Close" />
-        
+           <Button x:Name="ExportButton" Content="Export DB" Grid.Row="5" Grid.Column="1" Click="ExportData_Click"
+       Style="{StaticResource IconButtonStyle}" Tag="DatabaseArrowRight" ToolTip="Export full descriptions table" />
+       </StackPanel>
        
-        
-        <Border Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3">
-            <Border.Background>
-                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.InfoColorKey}}"/>
-            </Border.Background>
-            <Label x:Name="StatusTextLabel" Content="Ready" HorizontalAlignment="Left" VerticalAlignment="Center" />
-        </Border>
-    </Grid>
+       <Button x:Name="QuitButton" Content="Close" Grid.Row="5" Grid.Column="2" Click="QuitApp_Click"
+       Style="{StaticResource IconButtonStyle}" Tag="Close" ToolTip="Close" />
+       
+       <Border Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3">
+           <Border.Background>
+               <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.InfoColorKey}}"/>
+           </Border.Background>
+           <Label x:Name="StatusTextLabel" Content="Ready" HorizontalAlignment="Left" VerticalAlignment="Center" />
+       </Border>
+   </Grid>
 </Window>

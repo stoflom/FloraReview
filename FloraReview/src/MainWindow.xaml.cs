@@ -18,11 +18,13 @@ namespace FloraReview
         private readonly string appDataPath;
         private Dictionary<string, string?> inputData = [];
         private const string inputDataFileName = "inputData.json";
-
+        private string? version = string.Empty;
         public MainWindow()
         {
             InitializeComponent();
 
+            version = Assembly.GetExecutingAssembly()?.GetName()?.Version?.ToString() ?? string.Empty;
+            AppVersionLabel.Content = $"Version: {version}";
             UserTextBox.Text = Environment.UserName;
             inputData["user"] = UserTextBox.Text;
             inputData["dbPath"] = string.Empty;
