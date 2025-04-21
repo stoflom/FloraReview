@@ -76,10 +76,14 @@
                MinHeight="50" 
                IsReadOnly="True" VerticalScrollBarVisibility="Auto"
                Background="WhiteSmoke"  AllowDrop="False"  IsTabStop="True" MouseWheel="modifiedRichTextBox_MouseWheel" VerticalContentAlignment="Top" ScrollViewer.CanContentScroll="True" IsEnabled="True" >
+                <RichTextBox.CommandBindings>
+                    <CommandBinding Command="ApplicationCommands.Find" Executed="FindCommand_Executed" />
+                </RichTextBox.CommandBindings>
                 <RichTextBox.ContextMenu>
                     <ContextMenu>
                         <MenuItem Command="ApplicationCommands.SelectAll" />
                         <MenuItem Command="ApplicationCommands.Copy" />
+                        <MenuItem Command="ApplicationCommands.Find" />
                     </ContextMenu>
                 </RichTextBox.ContextMenu>
             </RichTextBox>

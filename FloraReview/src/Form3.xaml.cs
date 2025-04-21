@@ -90,14 +90,14 @@ namespace FloraReview
             originalTextBox.Text = currentRow["CoalescedText"].ToString();
 
 
-            bool EnableDiscard =false;
+            bool EnableDiscard = false;
 
             if (string.IsNullOrEmpty(currentRow["ApprovedText"]?.ToString()))
-                
+
             {
                 modifiedText = currentRow["FinalText"]?.ToString() ?? string.Empty;
                 InfoLabel.Content = "Loaded AI reviewed text.";
-                EnableDiscard = false; 
+                EnableDiscard = false;
             }
             else
             {
@@ -118,7 +118,7 @@ namespace FloraReview
         {
             if (selectedRows != null && currentRow != null)
             {
-                 bool isClosed = currentRow["Status"]?.ToString()?.ToUpper() == StatusClose;
+                bool isClosed = currentRow["Status"]?.ToString()?.ToUpper() == StatusClose;
                 modifiedRichTextBox.IsEnabled = !isClosed;
                 StatusLabel.Content = isClosed ? StatusClose : StatusOpen;
                 ReOpenButton.IsEnabled = isClosed;
@@ -129,7 +129,7 @@ namespace FloraReview
                 DiscardButton.IsEnabled = !isClosed && modified;
                 BackButton.IsEnabled = currentIndex > 0;
                 ForwardButton.IsEnabled = currentIndex < selectedRows.Count - 1;
-               
+
             }
         }
 
@@ -196,7 +196,7 @@ namespace FloraReview
             {
                 return;
             }
-            await SetStatus(StatusOpen); 
+            await SetStatus(StatusOpen);
         }
 
         private async void Approve_Click(object sender, RoutedEventArgs e)
@@ -409,8 +409,18 @@ namespace FloraReview
 
         private void FindCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            string selectedText = GetSelectedText(modifiedRichTextBox);
+            string selectedText = string.Empty;
 
+            // Check if the focus is on diffRichTextBox
+            if (diffRichTextBox.IsFocused)
+            {
+                selectedText = GetSelectedText(diffRichTextBox);
+            }
+            else if (modifiedRichTextBox.IsFocused)
+            {
+                selectedText = GetSelectedText(modifiedRichTextBox);
+            }
+           
             if (findDialog == null)
             {
                 findDialog = new FindDialog(selectedText);
@@ -539,13 +549,13 @@ namespace FloraReview
                     int textLength = current.GetTextRunLength(LogicalDirection.Forward);
                     if (count + textLength > offset)
                     {
-                        return current.GetPositionAtOffset(offset - count)!; 
+                        return current.GetPositionAtOffset(offset - count)!;
                     }
                     count += textLength;
                 }
                 current = current.GetPositionAtOffset(1, LogicalDirection.Forward);
             }
-            return current!; 
+            return current!;
         }
         protected override void OnClosed(EventArgs e)
         {
@@ -560,7 +570,7 @@ namespace FloraReview
                 // Call NextPage_Click when '>' or Right Arrow is pressed
                 Forward_Click(sender, e);
             }
-            else if ( e.Key == System.Windows.Input.Key.Left)
+            else if (e.Key == System.Windows.Input.Key.Left)
             {
                 // Call PreviousPage_Click when '<' or Left Arrow is pressed
                 Back_Click(sender, e);
