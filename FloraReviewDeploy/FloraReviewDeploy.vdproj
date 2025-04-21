@@ -261,15 +261,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:FloraReview"
-        "ProductCode" = "8:{8C6A92BA-5542-4EC0-901F-0DB6B6D7F3AD}"
-        "PackageCode" = "8:{ADD05A3F-BADC-4828-A475-6F52131BD0AB}"
+        "ProductCode" = "8:{5379BE52-6661-47EC-A2E1-5CC4008C65FC}"
+        "PackageCode" = "8:{C5671B6A-2EDC-4A47-A133-1AE76FA81BAD}"
         "UpgradeCode" = "8:{B48D0647-141B-42F3-B9AC-F0CFF1DFECF7}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:1.0.0.1"
         "Manufacturer" = "8:FloraReview"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:https://github.com/stoflom/FloraReview"
@@ -797,7 +797,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_3829080DBA95457E97E05A35A8AF860F"
             {
-            "SourcePath" = "8:..\\FloraReview\\obj\\Release\\net8.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\FloraReview\\obj\\Debug\\net8.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_35D6990F76F14D8C93E0103D167F6981"
@@ -825,7 +825,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_DF5B0AF6D66B48AFADEA3A2F5961E09B"
             {
-            "SourcePath" = "8:..\\FloraReview\\obj\\Release\\net8.0-windows\\FloraReview.dll"
+            "SourcePath" = "8:..\\FloraReview\\obj\\Debug\\net8.0-windows\\FloraReview.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_35D6990F76F14D8C93E0103D167F6981"
