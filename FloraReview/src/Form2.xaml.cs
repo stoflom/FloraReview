@@ -11,13 +11,13 @@ namespace FloraReview
 {
     public partial class Form2 : Window
     {
-        private Dictionary<string, string?> inputData;
-        private string? User;
+        private readonly Dictionary<string, string?> inputData;
+        private readonly string? User;
         private int rowCount = 0;
         private int pageIndex = 0;
         private readonly int pageSize = 50;
         private int totalPages = 0;
-        private SQLite3db? db;
+        private readonly SQLite3db? db;
 
         public Form2(Dictionary<string, string?> inputdata)
         {
@@ -116,7 +116,7 @@ namespace FloraReview
         }
 
 
-        private async Task<int> ExportSelectedRows(DataTable dataTable)
+        private static async Task<int> ExportSelectedRows(DataTable dataTable)
         {
             if (MessageBox.Show($"{dataTable.Rows.Count} will be exported to a csv file", "Export?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
@@ -149,7 +149,7 @@ namespace FloraReview
             return 0;
         }
 
-        private async Task<int> WriteRows(DataTable dataTable, StreamWriter writer)
+        private static async Task<int> WriteRows(DataTable dataTable, StreamWriter writer)
         {
             if (dataTable == null || writer == null)
             {
@@ -211,13 +211,13 @@ namespace FloraReview
             this.Close();
         }
 
-        private void dataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void DataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             //This will first select the clicked row, so only 1 row is selected
             ReviewSelectedRows_Click(sender, e);
         }
 
-        private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ReviewButton.IsEnabled = ExportButton.IsEnabled = exportMenuItem.IsEnabled = reviewMenuItem.IsEnabled = dataGrid.SelectedItems.Count > 0;
         }

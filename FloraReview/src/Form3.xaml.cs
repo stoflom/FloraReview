@@ -21,12 +21,12 @@ namespace FloraReview
         // Constants for statuses
         private enum Status
         {
-            Open,
-            Close
+            OPEN,
+            CLOSE
         }
 
-        private const string StatusOpen = "OPEN";
-        private const string StatusClose = "CLOSE";
+        private readonly string StatusOpen = Status.OPEN.ToString();
+        private readonly string StatusClose = Status.CLOSE.ToString();
 
         // Data from database (ReadOnly)
         private readonly string? User;
@@ -42,11 +42,11 @@ namespace FloraReview
         private string? currentRowId;
         private string? currentComment;
         private string? currentStatus;
-        private SQLite3db? db;
+        private readonly SQLite3db? db;
 
 
         private FindDialog? findDialog;
-        private List<TextPointer> matchPositions = new();
+        private readonly List<TextPointer> matchPositions = new();
         private int currentMatchIndex = -1;
 
 
@@ -84,7 +84,7 @@ namespace FloraReview
             guidTextBlock.Text = $"GUID: {currentRow["Id"]}";
             textTypeTextBlock.Text = $"Text Type: {currentRow["TextTitle"]}";
             scientificNameTextBlock.Text = $"Scientific Name: {currentRow["CalcFullName"]}";
-            currentStatus = string.IsNullOrEmpty(currentRow["Status"]?.ToString()?.ToLower()) ? "open" : currentRow["Status"]?.ToString();
+            currentStatus = string.IsNullOrEmpty(currentRow["Status"]?.ToString()?.ToUpper()) ? "OPEN" : currentRow["Status"]?.ToString();
             currentComment = string.IsNullOrEmpty(currentRow["Comment"]?.ToString()) ? string.Empty : currentRow["Comment"]?.ToString();
             logTextBox.Text = FixComment(currentComment);
             originalTextBox.Text = currentRow["CoalescedText"].ToString();
@@ -152,7 +152,7 @@ namespace FloraReview
 
         private void Back_Click(object sender, RoutedEventArgs e)
         {
-            saveRow();
+            SaveRow();
             if (currentIndex > 0)
             {
                 currentIndex--;
@@ -162,7 +162,7 @@ namespace FloraReview
 
         private void Forward_Click(object sender, RoutedEventArgs e)
         {
-            saveRow();
+            SaveRow();
             if (selectedRows != null && currentIndex < selectedRows.Count - 1)
             {
                 currentIndex++;
@@ -232,7 +232,7 @@ namespace FloraReview
             try
             {
                 string updatedText = GetCleanedText();
-                string statusLabel = newStatus.Trim().ToLower() == "open" ? StatusOpen : StatusClose;
+                string statusLabel = newStatus.Trim().ToUpper() == "OPEN" ? StatusOpen : StatusClose;
                 Dictionary<string, string?> updates = new();
 
                 string userComment = AskForComment();
@@ -253,9 +253,8 @@ namespace FloraReview
 
                         logTextBox.Text = FixComment(currentComment);
                         currentStatus = newStatus;
-                        modified = false;
-
                         UpdateCurrentRow();
+                        modified = false;
                         SetStateControls();
                     }
                 }
@@ -321,10 +320,15 @@ namespace FloraReview
         }
 
 
+        private static Regex WhitespaceRegex()
+        {
+            return new Regex(@"[\s]+");
+        }
+
         private string GetCleanedText()
         {
             TextRange textRange = new(modifiedRichTextBox.Document.ContentStart, modifiedRichTextBox.Document.ContentEnd);
-            string cleanedText = Regex.Replace(textRange.Text, @"[\s]+", " ").Trim();
+            string cleanedText = WhitespaceRegex().Replace(textRange.Text, " ").Trim();
             UpdateModifiedRichTextBox(cleanedText);
             return cleanedText;
         }
@@ -334,7 +338,7 @@ namespace FloraReview
             this.Close();
         }
 
-        private void saveRow()
+        private void SaveRow()
         {
             if (modified && MessageBox.Show("Do you want to save first?", "Save Data?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
@@ -354,7 +358,7 @@ namespace FloraReview
         }
 
 
-        private void modifiedRichTextBox_MouseWheel(object sender, MouseWheelEventArgs e)
+        private void ModifiedRichTextBox_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (Keyboard.Modifiers == ModifierKeys.Control)
             {
@@ -366,7 +370,7 @@ namespace FloraReview
             }
         }
 
-        private void modifiedRichTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void ModifiedRichTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             modified = true;
             SetStateControls();
@@ -420,7 +424,7 @@ namespace FloraReview
             {
                 selectedText = GetSelectedText(modifiedRichTextBox);
             }
-           
+
             if (findDialog == null)
             {
                 findDialog = new FindDialog(selectedText);
@@ -428,8 +432,8 @@ namespace FloraReview
 
                 // Subscribe to FindDialog events
                 findDialog.FindRequested += (searchText) => HighlightAllMatches(modifiedRichTextBox, searchText);
-                findDialog.NextRequested += (searchText) => HighlightNextMatch(modifiedRichTextBox, searchText);
-                findDialog.PreviousRequested += (searchText) => HighlightPreviousMatch(modifiedRichTextBox, searchText);
+                findDialog.NextRequested += (searchText) => HighlightNextMatch(modifiedRichTextBox);
+                findDialog.PreviousRequested += (searchText) => HighlightPreviousMatch(modifiedRichTextBox);
                 findDialog.ClearRequested += () => ClearHighlights(modifiedRichTextBox);
                 findDialog.TextChanged += () => ClearHighlights(modifiedRichTextBox);
                 findDialog.Closed += (s, args) => findDialog = null;
@@ -441,7 +445,7 @@ namespace FloraReview
             }
         }
 
-        private void spellCheckBox_Click(object sender, RoutedEventArgs e)
+        private void SpellCheckBox_Click(object sender, RoutedEventArgs e)
         {
             modifiedRichTextBox.SpellCheck.IsEnabled = spellCheckBox.IsChecked == true;
         }
@@ -452,7 +456,7 @@ namespace FloraReview
         }
 
 
-        private void HighlightNextMatch(RichTextBox richTextBox, string searchText)
+        private void HighlightNextMatch(RichTextBox richTextBox)
         {
             if (matchPositions.Count == 0) return;
 
@@ -462,7 +466,7 @@ namespace FloraReview
 
 
 
-        private void HighlightPreviousMatch(RichTextBox richTextBox, string searchText)
+        private void HighlightPreviousMatch(RichTextBox richTextBox)
         {
             if (matchPositions.Count == 0) return;
 
@@ -560,7 +564,7 @@ namespace FloraReview
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
-            saveRow();
+            SaveRow();
         }
 
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)

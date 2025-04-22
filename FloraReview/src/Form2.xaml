@@ -41,8 +41,8 @@
         </Grid>
         <DataGrid Name="dataGrid" Grid.Row="1" AutoGenerateColumns="True"
                       HorizontalAlignment="Stretch"
-                      MouseDoubleClick="dataGrid_MouseDoubleClick"
-                      SelectionChanged="dataGrid_SelectionChanged"
+                      MouseDoubleClick="DataGrid_MouseDoubleClick"
+                      SelectionChanged="DataGrid_SelectionChanged"
                       MaxColumnWidth="400" MinColumnWidth="70" RowDetailsVisibilityMode="Collapsed" IsReadOnly="True" >
             <DataGrid.ContextMenu>
                 <ContextMenu>

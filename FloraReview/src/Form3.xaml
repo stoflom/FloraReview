@@ -49,7 +49,7 @@
 
         <DockPanel Grid.Row="2" Grid.ColumnSpan="3" >
             <TextBox Name="originalTextBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
-                Background="WhiteSmoke"  MouseWheel="modifiedRichTextBox_MouseWheel" Focusable="False" IsTabStop="False"/>
+                Background="WhiteSmoke"  MouseWheel="ModifiedRichTextBox_MouseWheel" Focusable="False" IsTabStop="False"/>
         </DockPanel>
 
         <GridSplitter x:Name="gridSplitter" Grid.Row="3" Height="5" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"  Grid.ColumnSpan="3" VerticalContentAlignment="Center"/>
@@ -75,7 +75,7 @@
                Grid.Row="1" Grid.ColumnSpan="3"
                MinHeight="50" 
                IsReadOnly="True" VerticalScrollBarVisibility="Auto"
-               Background="WhiteSmoke"  AllowDrop="False"  IsTabStop="True" MouseWheel="modifiedRichTextBox_MouseWheel" VerticalContentAlignment="Top" ScrollViewer.CanContentScroll="True" IsEnabled="True" >
+               Background="WhiteSmoke"  AllowDrop="False"  IsTabStop="True" MouseWheel="ModifiedRichTextBox_MouseWheel" VerticalContentAlignment="Top" ScrollViewer.CanContentScroll="True" IsEnabled="True" >
                 <RichTextBox.CommandBindings>
                     <CommandBinding Command="ApplicationCommands.Find" Executed="FindCommand_Executed" />
                 </RichTextBox.CommandBindings>
@@ -105,13 +105,13 @@
             <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
                 Text="Modified Text (The text as edited by Gemini AI or the saved text. You can edit this text if it is OPEN.):" FontSize="12" FontWeight="SemiBold" Margin="0,10,0,5" />
 
-            <CheckBox x:Name="spellCheckBox" Grid.Column="2" Content="Spell Check" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,10,0" Click="spellCheckBox_Click"/>
+            <CheckBox x:Name="spellCheckBox" Grid.Column="2" Content="Spell Check" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,10,0" Click="SpellCheckBox_Click"/>
 
             <RichTextBox 
                 Grid.Row="1" Grid.ColumnSpan="3"    
                 Name="modifiedRichTextBox" MinHeight="100" VerticalScrollBarVisibility="Auto" 
                 SpellCheck.IsEnabled="False" AcceptsReturn="False" AcceptsTab="False"
-                MouseWheel="modifiedRichTextBox_MouseWheel" TextChanged="modifiedRichTextBox_TextChanged" VerticalContentAlignment="Top" ScrollViewer.CanContentScroll="True"  >
+                MouseWheel="ModifiedRichTextBox_MouseWheel" TextChanged="ModifiedRichTextBox_TextChanged" VerticalContentAlignment="Top" ScrollViewer.CanContentScroll="True"  >
                 <RichTextBox.CommandBindings>
                     <CommandBinding Command="ApplicationCommands.Find" Executed="FindCommand_Executed" />
                 </RichTextBox.CommandBindings>

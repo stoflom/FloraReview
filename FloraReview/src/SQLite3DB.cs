@@ -53,7 +53,7 @@ namespace SQLite3DB
             }
         }
 
-        private string[]? FixTextTitles(string? textTitle)
+        private static string[]? FixTextTitles(string? textTitle)
         {
             string[]? FixTextTitles = Array.Empty<string>();
             if (textTitle != null && textTitle.Length > 0)
@@ -63,6 +63,18 @@ namespace SQLite3DB
                 FixTextTitles = FixTextTitles.Select(item => item.Trim()).ToArray();
             }
             return FixTextTitles;
+        }
+
+        private static string[]? FixStatuss(string? textStatus)
+        {
+            string[]? fixStatuss = Array.Empty<string>();
+            if (textStatus != null && textStatus.Length > 0)
+            {
+                fixStatuss = textStatus.Split(',');
+                // Trim spaces from the textStatus
+                fixStatuss = fixStatuss.Select(item => item.Trim()).ToArray();
+            }
+            return fixStatuss;
         }
 
         public void ExportFullTable(string filePath)
@@ -88,7 +100,7 @@ namespace SQLite3DB
             }
         }
 
-        private void WriteDataToFile(SQLiteDataReader reader, StreamWriter writer)
+        private static void WriteDataToFile(SQLiteDataReader reader, StreamWriter writer)
         {
             // Write Header Row
             ReadOnlyCollection<DbColumn> schema = reader.GetColumnSchema();
@@ -98,7 +110,7 @@ namespace SQLite3DB
                 header.Append(schema[i].ColumnName);
                 if (i < schema.Count - 1)
                 {
-                    header.Append("\t");
+                    header.Append('\t');
                 }
             }
             writer.WriteLine(header.ToString());
@@ -111,7 +123,7 @@ namespace SQLite3DB
                 {
                     stringBuilder.Append(reader[i].ToString());
                     if (i < reader.FieldCount - 1)
-                        stringBuilder.Append("\t");
+                        stringBuilder.Append('\t');
                 }
                 writer.WriteLine(stringBuilder.ToString());
             }
@@ -144,7 +156,7 @@ namespace SQLite3DB
             return 0;
         }
 
-        private string ConstructUpdate(Dictionary<string, string?>? inputdata)
+        private static string ConstructUpdate(Dictionary<string, string?>? inputdata)
         {
             if (inputdata == null)
             {
@@ -174,7 +186,7 @@ namespace SQLite3DB
             return updateBuilder.ToString();
         }
 
-        private void AddUpdateParameters(SQLiteCommand cmd, Dictionary<string, string?> inputdata)
+        private static void AddUpdateParameters(SQLiteCommand cmd, Dictionary<string, string?> inputdata)
         {
             if (inputdata == null)
             {
@@ -303,6 +315,7 @@ namespace SQLite3DB
         {
             string? textTitles = string.Empty;
             string? queryName = string.Empty;
+            string? textStatus = string.Empty;
             StringBuilder queryWhereBuilder = new();
             if (inputData != null && inputData.TryGetValue("textTitle", out textTitles) && !string.IsNullOrEmpty(textTitles))
             {
@@ -313,6 +326,18 @@ namespace SQLite3DB
                     {
                         string placeholders = string.Join(",", System.Linq.Enumerable.Repeat("?", textTitlesArray.Length));
                         queryWhereBuilder.Append($"TextTitle IN ({placeholders})");
+                    }
+                }
+            }
+            if (inputData != null && inputData.TryGetValue("status", out textStatus) && !string.IsNullOrEmpty(textStatus))
+            {
+                if (textStatus != null && textStatus.Length > 0) // Ensure textStatus is not null
+                {
+                    string[]? textStatussArray = FixStatuss(textStatus);
+                    if (textStatussArray != null) // Add null check for textTitlesArray
+                    {
+                        string placeholders = string.Join(",", System.Linq.Enumerable.Repeat("?", textStatussArray.Length));
+                        queryWhereBuilder.Append($" AND Status IN ({placeholders})");
                     }
                 }
             }
@@ -344,6 +369,14 @@ namespace SQLite3DB
                     cmd.Parameters.AddWithValue($"@p{i}", textTitlesArray[i]);
                 }
             }
+            string[]? textStatussArray = FixStatuss(inputData["status"]);
+            if (textStatussArray != null && textStatussArray.Length > 0)
+            {
+                for (int i = 0; i < textStatussArray.Length; i++)
+                {
+                    cmd.Parameters.AddWithValue($"@q{i}", textStatussArray[i]);
+                }
+            }
             string? queryName = inputData["queryName"];
             if (!string.IsNullOrEmpty(queryName))
             {
@@ -360,7 +393,9 @@ namespace SQLite3DB
                 connection.Close();
                 connection.Dispose();
             }
+            GC.SuppressFinalize(this); // Ensure finalizer is suppressed
         }
+
 
 
     }

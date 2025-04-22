@@ -18,7 +18,7 @@ namespace FloraReview
         private readonly string appDataPath;
         private Dictionary<string, string?> inputData = [];
         private const string inputDataFileName = "inputData.json";
-        private string? version = string.Empty;
+        private readonly string? version = string.Empty;
         public MainWindow()
         {
             InitializeComponent();
@@ -30,6 +30,7 @@ namespace FloraReview
             inputData["dbPath"] = string.Empty;
             inputData["queryName"] = string.Empty;
             inputData["textTitle"] = string.Empty;
+            inputData["status"] = string.Empty;
 
             appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), appName);
 
@@ -72,6 +73,16 @@ namespace FloraReview
                             }
                         }
                     }
+                    if (inputData.TryGetValue("status", out string? status) && status != null)
+                    {
+                        {
+                            foreach (ListBoxItem item in statusListBox.Items)
+                            {
+                                string content = item.Content.ToString() ?? string.Empty;
+                                item.IsSelected = Regex.IsMatch(status, @"\b" + Regex.Escape(content) + @"\b");
+                            }
+                        }
+                    }
                 }
                 catch (IOException ex)
                 {
@@ -103,7 +114,8 @@ namespace FloraReview
                     inputData["dbPath"] = dbPathTextBox.Text;
                     inputData["user"] = UserTextBox.Text;
                     inputData["queryName"] = queryNameTextBox.Text;
-                    inputData["textTitle"] = getTextTitles();
+                    inputData["textTitle"] = GetTextTitles();
+                    inputData["status"] = GetStatuss();
                     string json = JsonSerializer.Serialize(inputData);
                     File.WriteAllText(inputDataPath, json);
                     return true;
@@ -127,7 +139,7 @@ namespace FloraReview
                 dbPathTextBox.Text = openFileDialog.FileName;
             }
 
-            setLoadExportButtons();
+            SetLoadExportButtons();
         }
 
         private void LoadData_Click(object sender, RoutedEventArgs e)
@@ -139,7 +151,7 @@ namespace FloraReview
             }
         }
 
-        private string? getTextTitles()
+        private string? GetTextTitles()
         {
             StringBuilder textTitleBuilder = new();
             string textTitle = string.Empty;
@@ -148,11 +160,27 @@ namespace FloraReview
 
                 foreach (ListBoxItem item in textTitleListBox.SelectedItems)
                 {
-                    textTitleBuilder.Append(item.Content).Append(",");
+                    textTitleBuilder.Append(item.Content).Append(',');
                 }
                 textTitle = textTitleBuilder.ToString().TrimEnd(',');
             }
             return textTitle;
+        }
+
+        private string? GetStatuss()
+        {
+            StringBuilder statusBuilder = new();
+            string textStatus = string.Empty;
+            if (statusListBox.SelectedItems.Count != 0)
+            {
+
+                foreach (ListBoxItem item in statusListBox.SelectedItems)
+                {
+                    statusBuilder.Append(item.Content).Append(',');
+                }
+                textStatus = statusBuilder.ToString().TrimEnd(',');
+            }
+            return textStatus;
         }
 
         private void QuitApp_Click(object sender, RoutedEventArgs e)
@@ -160,19 +188,19 @@ namespace FloraReview
             Application.Current.Shutdown();
         }
 
-        private void dbPathTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void DbPathTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             inputData["dbPath"] = dbPathTextBox.Text;
-            setLoadExportButtons();
+            SetLoadExportButtons();
         }
 
         private void User_TextChanged(object sender, TextChangedEventArgs e)
         {
             inputData["user"] = UserTextBox.Text;
-            setLoadExportButtons();
+            SetLoadExportButtons();
         }
 
-        private void setLoadExportButtons()
+        private void SetLoadExportButtons()
         {
             string? dbPath;
             string? User;
