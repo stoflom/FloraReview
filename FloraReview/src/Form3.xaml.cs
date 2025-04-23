@@ -77,6 +77,9 @@ namespace FloraReview
             {
                 return;
             }
+
+            Mouse.OverrideCursor = Cursors.Wait;
+
             InfoLabel.Content = "Loading row ......";
             currentRow = selectedRows[currentIndex];
             currentRowId = currentRow["rowid"]?.ToString();
@@ -112,6 +115,7 @@ namespace FloraReview
             SetStateControls();
             DiscardButton.IsEnabled = EnableDiscard; // Enable or disable the button based on the condition
             InfoLabel.Content = labelText;
+            Mouse.OverrideCursor = null;
         }
 
         private void SetStateControls()
