@@ -49,7 +49,7 @@ public class WordDiff2
                     int matchIndex = FindMatchIndex(modifiedList, oCurrent);
                     if (matchIndex > -1)
                     {
-                        InsertWords(richTextBox, modifiedList, matchIndex, Colors.Green, true);
+                        InsertWords(richTextBox, modifiedList, matchIndex, true);
                         lastOperation = Operation.Insert;
                     }
                     else
@@ -57,7 +57,7 @@ public class WordDiff2
                         matchIndex = FindMatchIndex(originalList, mCurrent);
                         if (matchIndex > -1)
                         {
-                            DeleteWords(richTextBox, originalList, matchIndex, Colors.Red, true);
+                            DeleteWords(richTextBox, originalList, matchIndex, true);
                             lastOperation = Operation.Delete;
                         }
                         else
@@ -95,7 +95,7 @@ public class WordDiff2
         return -1;
     }
 
-    private static void InsertWords(RichTextBox richTextBox, List<string> list, int count, Color color, bool addSpace)
+    private static void InsertWords(RichTextBox richTextBox, List<string> list, int count, bool addSpace)
     {
         for (int i = 0; i < count; i++)
         {
@@ -104,7 +104,7 @@ public class WordDiff2
         }
     }
 
-    private static void DeleteWords(RichTextBox richTextBox, List<string> list, int count, Color color, bool addSpace)
+    private static void DeleteWords(RichTextBox richTextBox, List<string> list, int count, bool addSpace)
     {
         for (int i = 0; i < count; i++)
         {
