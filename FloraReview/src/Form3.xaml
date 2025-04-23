@@ -19,7 +19,7 @@
             <RowDefinition MinHeight="30" MaxHeight="30" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="500" />
             <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="200" />
         </Grid.ColumnDefinitions>
