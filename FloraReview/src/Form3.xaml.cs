@@ -78,9 +78,6 @@ namespace FloraReview
                 return;
             }
 
-            Mouse.OverrideCursor = Cursors.Wait;
-
-            InfoLabel.Content = "Loading row ......";
             currentRow = selectedRows[currentIndex];
             currentRowId = currentRow["rowid"]?.ToString();
             SelectedRowLabel.Content = $"{currentIndex + 1} of {selectedRows.Count}";
@@ -115,7 +112,7 @@ namespace FloraReview
             SetStateControls();
             DiscardButton.IsEnabled = EnableDiscard; // Enable or disable the button based on the condition
             InfoLabel.Content = labelText;
-            Mouse.OverrideCursor = null;
+           
         }
 
         private void SetStateControls()
@@ -139,9 +136,11 @@ namespace FloraReview
 
         private void UpdateModifiedRichTextBox(string? text)
         {
+            Dispatcher.Invoke(() => Mouse.OverrideCursor = Cursors.Wait);
             modifiedRichTextBox.Document.Blocks.Clear();
             modifiedRichTextBox.Document.Blocks.Add(new Paragraph(new Run(text)));
             WordDiff2.DiffFunction(originalTextBox.Text, text, diffRichTextBox);
+            Dispatcher.Invoke(() => Mouse.OverrideCursor = null);
         }
 
         private static string? FixComment(string? comment)
@@ -232,6 +231,7 @@ namespace FloraReview
 
         private async Task<int> SetStatus(string newStatus)
         {
+            Dispatcher.Invoke(() => Mouse.OverrideCursor = Cursors.Wait);
             int result = 0;
             try
             {
@@ -267,6 +267,7 @@ namespace FloraReview
             {
                 MessageBox.Show($"Error updating status: {ex.Message}");
             }
+            Dispatcher.Invoke(() => Mouse.OverrideCursor = null);
             return result;
         }
 
@@ -285,6 +286,7 @@ namespace FloraReview
 
         private async Task<int> SaveData()
         {
+            Dispatcher.Invoke(() => Mouse.OverrideCursor = Cursors.Wait);
             int result = 0;
             try
             {
@@ -320,6 +322,7 @@ namespace FloraReview
             {
                 MessageBox.Show($"Error saving: {ex.Message}");
             }
+            Dispatcher.Invoke(() => Mouse.OverrideCursor = null);
             return result;
         }
 

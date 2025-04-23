@@ -4,6 +4,7 @@ using SQLite3DB;
 using System.IO;
 using System.Text;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Controls;
 using Microsoft.Win32; // For SaveFileDialog
 
@@ -41,8 +42,9 @@ namespace FloraReview
                 {
                     throw new InvalidOperationException("Database connection is not initialized.");
                 }
-
+                Dispatcher.Invoke(() => Mouse.OverrideCursor = Cursors.Wait);
                 rowCount = await db.GetQueryRowCount();
+                Dispatcher.Invoke(() => Mouse.OverrideCursor = null);
 
                 totalPages = (int)Math.Ceiling((double)rowCount / pageSize);
                 rowCountLabel.Content = $"Rows Returned: {rowCount}";
@@ -62,9 +64,10 @@ namespace FloraReview
                 {
                     throw new InvalidOperationException("Database connection is not initialized.");
                 }
-
+                Dispatcher.Invoke(() => Mouse.OverrideCursor = Cursors.Wait);
                 // Use Task.Run to run the database operation on a background thread
                 DataTable dataTable = await Task.Run(() => db.GetQueryPageRows(pageSize, pageIndex));
+                Dispatcher.Invoke(() => Mouse.OverrideCursor = null);
 
                 if (dataTable != null)
                 {
@@ -110,7 +113,9 @@ namespace FloraReview
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     string filePath = saveFileDialog.FileName;
+                    Dispatcher.Invoke(() => Mouse.OverrideCursor = Cursors.Wait);
                     db.ExportQueryRows(filePath);
+                    Dispatcher.Invoke(() => Mouse.OverrideCursor = null);
                 }
             }
         }
@@ -258,6 +263,7 @@ namespace FloraReview
 
         private async void ExportSelectedRows_Click(object sender, RoutedEventArgs e)
         {
+            Dispatcher.Invoke(() => Mouse.OverrideCursor = Cursors.Wait);
             if (dataGrid.SelectedItems.Count > 0)
             {
                 DataTable dataTable = new DataTable();
@@ -292,6 +298,7 @@ namespace FloraReview
             {
                 MessageBox.Show("Please select at least one row to export.");
             }
+            Dispatcher.Invoke(() => Mouse.OverrideCursor = null);
         }
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
