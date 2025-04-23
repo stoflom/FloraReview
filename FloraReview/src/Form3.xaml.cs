@@ -77,6 +77,7 @@ namespace FloraReview
             {
                 return;
             }
+            InfoLabel.Content = "Loading row ......";
             currentRow = selectedRows[currentIndex];
             currentRowId = currentRow["rowid"]?.ToString();
             SelectedRowLabel.Content = $"{currentIndex + 1} of {selectedRows.Count}";
@@ -91,27 +92,26 @@ namespace FloraReview
 
 
             bool EnableDiscard = false;
-
+            string labelText ;
             if (string.IsNullOrEmpty(currentRow["ApprovedText"]?.ToString()))
 
             {
                 modifiedText = currentRow["FinalText"]?.ToString() ?? string.Empty;
-                InfoLabel.Content = "Loaded AI reviewed text.";
+                labelText = "Loaded AI reviewed text.";
                 EnableDiscard = false;
             }
             else
             {
                 modifiedText = currentRow["ApprovedText"]?.ToString() ?? string.Empty;
-                InfoLabel.Content = "Loaded saved text.";
+                labelText = "Loaded saved text.";
                 EnableDiscard = true;
             }
             UpdateModifiedRichTextBox(modifiedText);
-
-            WordDiff2.DiffFunction(currentRow["CoalescedText"].ToString(), modifiedText, diffRichTextBox);
-
+           
             modified = false;
             SetStateControls();
             DiscardButton.IsEnabled = EnableDiscard; // Enable or disable the button based on the condition
+            InfoLabel.Content = labelText;
         }
 
         private void SetStateControls()

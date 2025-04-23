@@ -37,6 +37,12 @@ public class WordDiff2
 
                 if (oCurrent == mCurrent)
                 {
+                    // If both words are the same, append them as normal text
+                    // Check if the last operation was the same to avoid adding space unnecessarily 
+                    if (lastOperation != Operation.Same)
+                    {
+                        AppendText(richTextBox, " ", Operation.Same, false);
+                    }
                     AppendText(richTextBox, oCurrent, Operation.Same, true);
                     originalList.RemoveAt(0);
                     modifiedList.RemoveAt(0);
@@ -47,7 +53,7 @@ public class WordDiff2
                     int matchIndex = FindMatchIndex(modifiedList, oCurrent);
                     if (matchIndex > -1)
                     {
-                        InsertWords(richTextBox, modifiedList, matchIndex, Colors.Green, true);
+                        InsertWords(richTextBox, modifiedList, matchIndex, Colors.Green, lastOperation == Operation.Insert);
                         lastOperation = Operation.Insert;
                     }
                     else
@@ -55,20 +61,20 @@ public class WordDiff2
                         matchIndex = FindMatchIndex(originalList, mCurrent);
                         if (matchIndex > -1)
                         {
-                            DeleteWords(richTextBox, originalList, matchIndex, Colors.Red, true);
+                            DeleteWords(richTextBox, originalList, matchIndex, Colors.Red, lastOperation == Operation.Delete);
                             lastOperation = Operation.Delete;
                         }
                         else
                         {
                             if (oCurrent != null)
                             {
-                                AppendText(richTextBox, oCurrent, Operation.Delete, lastOperation == Operation.Insert);
+                                AppendText(richTextBox, oCurrent, Operation.Delete, lastOperation == Operation.Delete);
                                 originalList.RemoveAt(0);
                                 lastOperation = Operation.Delete;
                             }
                             if (mCurrent != null)
                             {
-                                AppendText(richTextBox, mCurrent, Operation.Insert, lastOperation == Operation.Delete);
+                                AppendText(richTextBox, mCurrent, Operation.Insert, lastOperation == Operation.Insert);
                                 modifiedList.RemoveAt(0);
                                 lastOperation = Operation.Insert;
                             }

@@ -324,8 +324,13 @@ namespace SQLite3DB
                     string[]? textTitlesArray = FixTextTitles(textTitles);
                     if (textTitlesArray != null) // Add null check for textTitlesArray
                     {
-                        string placeholders = string.Join(",", System.Linq.Enumerable.Repeat("?", textTitlesArray.Length));
-                        queryWhereBuilder.Append($"TextTitle IN ({placeholders})");
+                        queryWhereBuilder.Append($"TextTitle IN (");
+                        for ( int i = 0; i < textTitlesArray.Length; i++)
+                        {
+                            queryWhereBuilder.Append($"@p{i},");
+                        }
+                        queryWhereBuilder.Remove(queryWhereBuilder.Length - 1, 1); // Remove the last comma
+                        queryWhereBuilder.Append($")");
                     }
                 }
             }
@@ -336,8 +341,17 @@ namespace SQLite3DB
                     string[]? textStatussArray = FixStatuss(textStatus);
                     if (textStatussArray != null) // Add null check for textTitlesArray
                     {
-                        string placeholders = string.Join(",", System.Linq.Enumerable.Repeat("?", textStatussArray.Length));
-                        queryWhereBuilder.Append($" AND Status IN ({placeholders})");
+                        if (queryWhereBuilder.Length > 0)
+                        {
+                            queryWhereBuilder.Append(" AND ");
+                        }
+                        queryWhereBuilder.Append($"Status IN (");
+                        for (int i = 0; i < textStatussArray.Length; i++)
+                        {
+                            queryWhereBuilder.Append($"@q{i},");
+                        }
+                        queryWhereBuilder.Remove(queryWhereBuilder.Length - 1, 1); // Remove the last comma
+                        queryWhereBuilder.Append($")");
                     }
                 }
             }
