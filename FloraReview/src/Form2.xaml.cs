@@ -149,7 +149,7 @@ namespace FloraReview
             return 0;
         }
 
-        private static async Task<int> WriteRows(DataTable dataTable, StreamWriter writer)
+        private static async Task<int> WriteRows(DataTable? dataTable, StreamWriter? writer)
         {
             if (dataTable == null || writer == null)
             {
