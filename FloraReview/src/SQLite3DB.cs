@@ -34,7 +34,7 @@ namespace SQLite3DB
                 }
         }
 
-        public SQLite3db(Dictionary<string, string?> inputdata)
+        public SQLite3db(Dictionary<string, string?>? inputdata)
         {
             if (inputdata == null || !inputdata.TryGetValue("dbPath", out dbPath) || string.IsNullOrEmpty(dbPath))
             {
