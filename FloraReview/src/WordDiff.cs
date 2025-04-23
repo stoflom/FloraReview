@@ -139,14 +139,7 @@ public class WordDiff2
                     textRange.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Strikethrough);
                     break;
             }
-            
+
         }
     }
 }
-
-
-
-
-
-
-
