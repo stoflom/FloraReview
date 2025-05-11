@@ -407,7 +407,7 @@ namespace SQLite3DB
                 connection.Close();
                 connection.Dispose();
             }
-            GC.SuppressFinalize(this); // Ensure finalizer is suppressed
+            GC.SuppressFinalize(this); // Ensure no double disposal
         }
 
 
