@@ -49,6 +49,7 @@ namespace FloraReview
                 totalPages = (int)Math.Ceiling((double)rowCount / pageSize);
                 rowCountLabel.Content = $"Rows Returned: {rowCount}";
                 LoadPageData();
+                dataGrid.Focus();
             }
             catch (Exception ex)
             {
