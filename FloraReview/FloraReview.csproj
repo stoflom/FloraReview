@@ -18,6 +18,7 @@
     <AssemblyVersion>1.0.2.5</AssemblyVersion>
     <FileVersion>1.0.2.5</FileVersion>
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <StartupObject>FloraReview.App</StartupObject>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
