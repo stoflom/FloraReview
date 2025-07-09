@@ -369,6 +369,8 @@ namespace SQLite3DB
             }
             return queryWhereBuilder.ToString();
         }
+
+
         private void AddParameters(SQLiteCommand cmd)
         {
             if (inputData == null)
