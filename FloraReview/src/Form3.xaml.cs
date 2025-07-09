@@ -104,7 +104,7 @@ namespace FloraReview
             {
                 modifiedText = currentRow["ApprovedText"]?.ToString() ?? string.Empty;
                 labelText = "Loaded saved text.";
-                EnableDiscard = true;
+                EnableDiscard = currentStatus == "OPEN";
             }
             UpdateModifiedRichTextBox(modifiedText);
            
