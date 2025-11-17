@@ -15,8 +15,8 @@
     <ApplicationIcon>Resources\AppIcon.ico</ApplicationIcon>
     <PackageIcon>AppIcon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <AssemblyVersion>1.0.2.5</AssemblyVersion>
-    <FileVersion>1.0.2.5</FileVersion>
+    <AssemblyVersion>1.0.2.6</AssemblyVersion>
+    <FileVersion>1.0.2.6</FileVersion>
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     <StartupObject>FloraReview.App</StartupObject>
   </PropertyGroup>
