@@ -9,6 +9,7 @@ using System.Data.Common;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using System.Reflection;
+using System.Data.SQLite;
 
 namespace FloraReview
 {
