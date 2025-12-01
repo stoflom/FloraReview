@@ -19,6 +19,8 @@
     <FileVersion>1.0.2.6</FileVersion>
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     <StartupObject>FloraReview.App</StartupObject>
+    <Title>FloraReview</Title>
+    <Description>Application to review database descriptions for plants</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
