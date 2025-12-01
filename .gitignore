@@ -12,6 +12,7 @@
 PromptEngineering/
 *.csv
 *.db
+*.snk
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
