@@ -23,6 +23,8 @@
     <Description>Application to review database descriptions for plants</Description>
     <AssemblyOriginatorKeyFile>C:\Users\stoff\source\repos\stoflom\FloraReview\sgKey.snk</AssemblyOriginatorKeyFile>
     <DelaySign>False</DelaySign>
+    <PackageProjectUrl>https://github.com/stoflom/FloraReview</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/stoflom/FloraReview</RepositoryUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
