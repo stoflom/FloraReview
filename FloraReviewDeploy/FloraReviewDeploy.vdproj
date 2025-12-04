@@ -251,7 +251,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:FloraReview"
         "ProductCode" = "8:{6252CA43-8E07-4C62-957F-763721D92027}"
-        "PackageCode" = "8:{8F550B97-A46B-482F-AABB-9F597756A6F8}"
+        "PackageCode" = "8:{8972D3E0-769E-4E39-99D8-D5DD32A229BB}"
         "UpgradeCode" = "8:{B48D0647-141B-42F3-B9AC-F0CFF1DFECF7}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
@@ -274,7 +274,7 @@
         "UseSystemSearchPath" = "11:TRUE"
         "TargetPlatform" = "3:1"
         "PreBuildEvent" = "8:"
-        "PostBuildEvent" = "8:"
+        "PostBuildEvent" = "8:call \"$(ProjectDir)SignMSI.bat\" \"$(BuiltOuputPath)\""
         "RunPostBuildEvent" = "3:0"
         }
         "Registry"
