@@ -56,7 +56,7 @@ This method involves signing the executable and MSI installer files directly usi
     First, build your project package. Then, execute the following PowerShell commands to sign the executable.
     ```powershell
     # Target paths - UPDATE THESE TO YOUR PROJECT'S PATHS
-    $TargetDir = "C:\Users\stoff\source\repos\stoflom\FloraReview"
+    $TargetDir = "PathToProject\FloraReview"
     $ExePath = "$TargetDir\FloraReview\bin\Release\net8.0-windows\FloraReview.exe"
     $InstallerPath = "$TargetDir\FloraReviewDeploy\Release\FloraReviewDeployV1026.msi" # This path is for the MSI, but we're signing the EXE here.
 
