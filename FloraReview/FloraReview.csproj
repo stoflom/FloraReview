@@ -90,7 +90,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command=" call &quot;$(ProjectDir)SignEXE.bat&quot; &quot;$(OutDir)$(AssemblyName).exe&quot;" />
+    <Exec Command="call &quot;$(ProjectDir)SignEXE.bat&quot; &quot;$(OutDir)$(AssemblyName).exe&quot;" />
   </Target>
 
 </Project>

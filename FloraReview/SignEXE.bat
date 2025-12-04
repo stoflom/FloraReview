@@ -1,6 +1,6 @@
 @echo off
 
-REM Get the installer path from the first argument
+REM Get the full path to the exe file from the first argument
 
 SET ExePath=%1
 
@@ -9,8 +9,7 @@ SET timestampUrl=http://timestamp.digicert.com
 SET signtool=C:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\signtool.exe
 
 REM Execute the signtool command
-REM Use quotes around paths that may contain spaces to ensure they are handled correctly.
-REM The '&' operator in PowerShell is replaced by directly calling the executable in batch.
+REM The -a flag signals automatic selection of the best signing certificate from the users store.
 "%signtool%" sign -a /tr %timestampUrl% /td sha256 /fd sha256 "%ExePath%"
 
 REM Check the error level after execution:
