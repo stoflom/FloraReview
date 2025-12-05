@@ -80,3 +80,25 @@ This method involves signing the executable and MSI installer files directly usi
 
 For more details on creating self-signed code signing certificates with PowerShell, refer to:
 https://codesigningstore.com/how-to-create-self-signed-code-signing-certificate-with-powershell
+
+
+## Signing msi deployment during build
+When building the project the following pots-build actions are called:
+(NOTE: the msi actually uses the output from the obj/Rlease..path)
+
+exe and dll files in bin/Release/...
+
+    call "$(ProjectDir)SignEXE.bat" "$(TargetDir)$(TargetFileName)"
+    call "$(ProjectDir)SignEXE.bat" "$(TargetPath)"
+
+exe and dll files in obj/Release/... (Note the name of the executable is apphost.exe here)
+
+    call "$(ProjectDir)SignEXE.bat" "$(IntermediateOutputPath)apphost.exe"
+    call "$(ProjectDir)SignEXE.bat" "$(IntermediateOutputPath)$(AssemblyName).dll"
+
+When the deployment package is built the following post-build action is called:
+
+    call "$(ProjectDir)SignMSI.bat" "$(TargetDir)$(TargetName)V$(TargetVersion).msi"
+
+The bat files are not included in the msi package but are in the repository. They only differ
+in comments but are kept separate for future flexibility.

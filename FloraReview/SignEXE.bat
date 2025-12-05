@@ -20,5 +20,8 @@ IF %ERRORLEVEL% NEQ 0 (
     ECHO SignTool completed successfully.
 )
 
-REM Call via the following command in the .csproj file:
-REM call "$(ProjectDir)SignEXE.bat" "$(OutDir)$(AssemblyName).exe"
+REM Call via the following commands in the .csproj file (the msi actually uses the output from the obj/Rlease..path):
+REM call "$(ProjectDir)SignEXE.bat" "$(TargetDir)$(TargetFileName)"
+REM call "$(ProjectDir)SignEXE.bat" "$(TargetPath)"
+REM call "$(ProjectDir)SignEXE.bat" "$(IntermediateOutputPath)apphost.exe"
+REM call "$(ProjectDir)SignEXE.bat" "$(IntermediateOutputPath)$(AssemblyName).dll"
