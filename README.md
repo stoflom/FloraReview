@@ -83,7 +83,7 @@ https://codesigningstore.com/how-to-create-self-signed-code-signing-certificate-
 
 
 ## Signing msi deployment during build
-When building the project the following pots-build actions are called:
+When building the project the following post-build actions are called:
 (NOTE: the msi actually uses the output from the obj/Rlease..path)
 
 exe and dll files in bin/Release/...
