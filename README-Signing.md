@@ -87,5 +87,8 @@ When the deployment package is built the following post-build action is called:
 
     call "$(ProjectDir)SignMSI.bat" "$(TargetDir)$(TargetName)V$(TargetVersion).msi"
 
+NOTE seems you have to REBUILD for the signing to work correctly??
+
+
 The bat files are not included in the msi package but are in the repository. They only differ
 in comments but are kept separate for future flexibility.
