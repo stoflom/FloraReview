@@ -1,15 +1,20 @@
-Adding a word list to a WPF RichTextBox for lexical analysis or spell-checking can be achieved by customizing the RichTextBox control and integrating a dictionary or word list. Here's a simple example to get you started:
+# Adding a word list to a WPF `RichTextBox`
 
-Step 1: Create a Word List
+Adding a word list to a WPF `RichTextBox` for lexical analysis or spell-checking can be achieved by customizing the control and integrating a dictionary or word list. Below is a concise, formatted guide with example code.
 
-First, create a list of words that you want to use for lexical analysis or spell-checking. This can be stored in a text file or directly in your code.
+## Step 1: Create a Word List
 
+Create a list of words that you want to use for lexical analysis or spell-checking. This can be stored in a text file or directly in code.
+
+```csharp
 List<string> wordList = new List<string> { "example", "word", "list", "for", "richtextbox" };
+```
 
-Step 2: Customize the RichTextBox
+## Step 2: Customize the `RichTextBox`
 
-You can extend the RichTextBox to include a method for checking words against your word list.
+Extend the `RichTextBox` to include a method for checking words against your word list. The example below highlights words not found in the list.
 
+```csharp
 public class CustomRichTextBox : RichTextBox
 {
     private List<string> _wordList;
@@ -72,11 +77,13 @@ public class CustomRichTextBox : RichTextBox
         return current;
     }
 }
+```
 
-Step 3: Use the CustomRichTextBox in Your XAML
+## Step 3: Use the `CustomRichTextBox` in XAML
 
-Finally, use the CustomRichTextBox in your XAML file.
+Add the custom control to your window XAML and a button to trigger the check.
 
+```xml
 <Window x:Class="YourNamespace.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -86,15 +93,20 @@ Finally, use the CustomRichTextBox in your XAML file.
         <Button Content="Check Words" VerticalAlignment="Bottom" Click="CheckWords_Click"/>
     </Grid>
 </Window>
+```
 
-Step 4: Handle the Button Click Event
+## Step 4: Handle the Button Click Event
 
-In your code-behind, handle the button click event to trigger the word check.
+Trigger the word check from your code-behind.
 
+```csharp
 private void CheckWords_Click(object sender, RoutedEventArgs e)
 {
     customRichTextBox.CheckWords();
 }
+```
 
+## Notes
 
-This example highlights words that are not in the word list by changing their background color to yellow. You can customize the HighlightWord method to suit your needs, such as changing the text color or adding underlines.
+- The example highlights words that are not in the word list by changing their background to yellow. You can customize `HighlightWord` to change color, underline, or add adorner-based squiggles.
+- For larger dictionaries or better performance consider using a `HashSet<string>` for lookups and running checks on a background thread.
