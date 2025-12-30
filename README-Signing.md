@@ -100,6 +100,7 @@ all the output files  as follows:
 2) Create the catalog .cat file
 3) Sign the cat file and include in msi to be installed in the app directory
 
+```
 :: Paths
 set CERT_PATH="C:\Path\To\certificate.pfx"
 set CERT_PASS=YourPassword
@@ -123,9 +124,10 @@ makecat %CDF_FILE%
 
 :: Sign catalog
 signtool sign /f %CERT_PATH% /p %CERT_PASS% /fd SHA256 /tr %TIMESTAMP_URL% /td SHA256 %CAT_FILE%
-
+```
 
 
 To check a catalog file using the cat file:
-
+```
 signtool verify /c "%OUTPUT_DIR%\MyCatalog.cat" "%OUTPUT_DIR%\MyApp.exe"
+```
