@@ -92,3 +92,40 @@ NOTE seems you have to REBUILD for the signing to work correctly??
 
 The bat files are not included in the msi package but are in the repository. They only differ
 in comments but are kept separate for future flexibility.
+
+NOTE: You can also create a catalog file for all the output files and sign the catalog file to protect
+all the output files  as follows:
+
+1) Create a catalog definition .cdf file
+2) Create the catalog .cat file
+3) Sign the cat file and include in msi to be installed in the app directory
+
+:: Paths
+set CERT_PATH="C:\Path\To\certificate.pfx"
+set CERT_PASS=YourPassword
+set TIMESTAMP_URL=http://timestamp.digicert.com
+set OUTPUT_DIR=$(TargetDir)
+set CDF_FILE=%OUTPUT_DIR%\MyCatalog.cdf
+set CAT_FILE=%OUTPUT_DIR%\MyCatalog.cat
+
+:: Create CDF file
+echo [CatalogHeader] > %CDF_FILE%
+echo Name=MyCatalog.cat >> %CDF_FILE%
+echo PublicVersion=0x0000001 >> %CDF_FILE%
+echo EncodingType=0x00010001 >> %CDF_FILE%
+echo CATATTR1=0x10010001:My Catalog >> %CDF_FILE%
+echo [CatalogFiles] >> %CDF_FILE%
+echo <hash>="%OUTPUT_DIR%\MyApp.exe" >> %CDF_FILE%
+echo <hash>="%OUTPUT_DIR%\MyLibrary.dll" >> %CDF_FILE%
+
+:: Generate catalog
+makecat %CDF_FILE%
+
+:: Sign catalog
+signtool sign /f %CERT_PATH% /p %CERT_PASS% /fd SHA256 /tr %TIMESTAMP_URL% /td SHA256 %CAT_FILE%
+
+
+
+To check a catalog file using the cat file:
+
+signtool verify /c "%OUTPUT_DIR%\MyCatalog.cat" "%OUTPUT_DIR%\MyApp.exe"
