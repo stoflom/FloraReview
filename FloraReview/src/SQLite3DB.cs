@@ -214,15 +214,6 @@ namespace Sqlite3DB
                 SelectCommand = new SqliteCommand(query, connection);
             }
 
-            public SqliteDataAdapter(string query, SqliteConnection connection, DataTable dataTable)
-            {
-                if (connection == null) throw new ArgumentNullException(nameof(connection));
-                if (string.IsNullOrWhiteSpace(query)) throw new ArgumentNullException(nameof(query));
-
-                SelectCommand = new SqliteCommand(query, connection);
-                Fill(dataTable);
-            }
-
             /// <summary>
             /// Mimics the Fill method of a DataAdapter by executing the SelectCommand
             /// and loading the results into the provided DataTable.
