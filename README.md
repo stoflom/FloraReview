@@ -1,6 +1,6 @@
 # FloraReview Application
 
-This application allows users to open an SQLite3 database, select entries, and display original and AI-modified text for editing and approval. Approved entries can then be exported to a CSV file using `\t` as a delimiter.
+This application allows users to open an Sqlite3 database, select entries, and display original and AI-modified text for editing and approval. Approved entries can then be exported to a CSV file using `\t` as a delimiter.
 
 ## Database Schema
 

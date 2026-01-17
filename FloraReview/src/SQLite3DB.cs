@@ -1,30 +1,30 @@
 ﻿using System.Text;
 using System.Data;
 using System.Data.Common;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Diagnostics;
 
 
-namespace SQLite3DB
+namespace Sqlite3DB
 {
-    //this class assumes we are working with the SQLite database schema schema.sql
-    public class SQLite3db : IDisposable
+    //this class assumes we are working with the Sqlite database schema schema.sql
+    public class Sqlite3db : IDisposable
     {
-        private SQLiteConnection? connection;
+        private SqliteConnection? connection;
         private const string tableName = "descriptions";
         private readonly string? dbPath = string.Empty;
         private readonly Dictionary<string, string?>? inputData;
 
-        public SQLite3db(string? adbPath)
+        public Sqlite3db(string? adbPath)
         {
             if (!string.IsNullOrEmpty(adbPath) && adbPath.Length > 0)
                 try
                 {
                     dbPath = adbPath ?? string.Empty;
-                    connection = new SQLiteConnection($"Data Source={dbPath};Version=3;");
+                    connection = new SqliteConnection($"Data Source={dbPath}");
                     connection.Open();
                 }
                 catch (Exception ex)
@@ -34,7 +34,7 @@ namespace SQLite3DB
                 }
         }
 
-        public SQLite3db(Dictionary<string, string?>? inputdata)
+        public Sqlite3db(Dictionary<string, string?>? inputdata)
         {
             if (inputdata == null || !inputdata.TryGetValue("dbPath", out dbPath) || string.IsNullOrEmpty(dbPath))
             {
@@ -43,7 +43,7 @@ namespace SQLite3DB
             inputData = inputdata;
             try
             {
-                connection = new SQLiteConnection($"Data Source={dbPath};Version=3;");
+                connection = new SqliteConnection($"Data Source={dbPath}");
                 connection.Open();
             }
             catch (Exception ex)
@@ -83,8 +83,8 @@ namespace SQLite3DB
             {
                 try
                 {
-                    using SQLiteCommand cmd = new($"SELECT * from {tableName} ", connection);
-                    using SQLiteDataReader reader = cmd.ExecuteReader();
+                    using SqliteCommand cmd = new($"SELECT * from {tableName} ", connection);
+                    using SqliteDataReader reader = cmd.ExecuteReader();
                     using StreamWriter writer = new(filePath);
                     WriteDataToFile(reader, writer);
                 }
@@ -100,7 +100,7 @@ namespace SQLite3DB
             }
         }
 
-        private static void WriteDataToFile(SQLiteDataReader reader, StreamWriter writer)
+        private static void WriteDataToFile(SqliteDataReader reader, StreamWriter writer)
         {
             // Write Header Row
             ReadOnlyCollection<DbColumn> schema = reader.GetColumnSchema();
@@ -137,9 +137,9 @@ namespace SQLite3DB
                 try
                 {
                     string update = $"UPDATE {tableName} SET {ConstructUpdate(inputdata)}";
-                    using SQLiteCommand cmd = new(update, connection);
+                    using SqliteCommand cmd = new(update, connection);
                     AddUpdateParameters(cmd, inputdata);
-                    int rowsAffected = await cmd.ExecuteNonQueryAsync();  
+                    int rowsAffected = await cmd.ExecuteNonQueryAsync();
                     return rowsAffected;
                 }
                 catch (Exception ex)
@@ -186,7 +186,7 @@ namespace SQLite3DB
             return updateBuilder.ToString();
         }
 
-        private static void AddUpdateParameters(SQLiteCommand cmd, Dictionary<string, string?> inputdata)
+        private static void AddUpdateParameters(SqliteCommand cmd, Dictionary<string, string?> inputdata)
         {
             if (inputdata == null)
             {
@@ -201,6 +201,51 @@ namespace SQLite3DB
             }
         }
 
+        //Lite adapter class to mimic ADO.NET DataAdapter behavior
+        public class SqliteDataAdapter : IDisposable
+        {
+            public SqliteCommand SelectCommand { get; set; }
+
+            public SqliteDataAdapter(string query, SqliteConnection connection)
+            {
+                if (connection == null) throw new ArgumentNullException(nameof(connection));
+                if (string.IsNullOrWhiteSpace(query)) throw new ArgumentNullException(nameof(query));
+
+                SelectCommand = new SqliteCommand(query, connection);
+            }
+
+            public SqliteDataAdapter(string query, SqliteConnection connection, DataTable dataTable)
+            {
+                if (connection == null) throw new ArgumentNullException(nameof(connection));
+                if (string.IsNullOrWhiteSpace(query)) throw new ArgumentNullException(nameof(query));
+
+                SelectCommand = new SqliteCommand(query, connection);
+                Fill(dataTable);
+            }
+
+            /// <summary>
+            /// Mimics the Fill method of a DataAdapter by executing the SelectCommand
+            /// and loading the results into the provided DataTable.
+            /// </summary>
+            public int Fill(DataTable dataTable)
+            {
+                if (dataTable == null) throw new ArgumentNullException(nameof(dataTable));
+
+                using (var reader = SelectCommand.ExecuteReader())
+                {
+                    dataTable.Clear();
+                    dataTable.Load(reader);
+                    return dataTable.Rows.Count;
+                }
+            }
+
+            public void Dispose()
+            {
+                SelectCommand?.Dispose();
+            }
+        }
+
+
         public async Task<DataTable> GetAllQueryRows()
         {
             DataTable datatable = new();
@@ -209,9 +254,10 @@ namespace SQLite3DB
             {
                 try
                 {
-                    using SQLiteDataAdapter adapter = new(query, connection);
+                    using SqliteDataAdapter adapter = new(query, connection);
                     AddParameters(adapter.SelectCommand);
                     await Task.Run(() => adapter.Fill(datatable));
+                    adapter.Dispose();
                 }
                 catch (Exception ex)
                 {
@@ -231,7 +277,7 @@ namespace SQLite3DB
             string query = $"SELECT COUNT(*) FROM {tableName} {ConstructQueryWhere()}";
             if (connection != null && connection.State == ConnectionState.Open)
             {
-                using (SQLiteCommand cmd = new(query, connection))
+                using (SqliteCommand cmd = new(query, connection))
                 {
                     AddParameters(cmd);
                     int totalRows = 0;
@@ -260,10 +306,10 @@ namespace SQLite3DB
             {
                 try
                 {
-                    using SQLiteCommand cmd = new(query, connection);
+                    using SqliteCommand cmd = new(query, connection);
                     AddParameters(cmd);
                     {
-                        using SQLiteDataReader reader = cmd.ExecuteReader();
+                        using SqliteDataReader reader = cmd.ExecuteReader();
                         using StreamWriter writer = new(filePath);
                         WriteDataToFile(reader, writer);
                     }
@@ -291,10 +337,11 @@ namespace SQLite3DB
                 {
                     string query = $"SELECT rowid,* FROM {tableName} {ConstructQueryWhere()}"
                         + $" LIMIT {pageSize} OFFSET {pageIndex * pageSize}";
-                    using (SQLiteDataAdapter adapter = new(query, connection))
+                    using (SqliteDataAdapter adapter = new(query, connection))
                     {
                         AddParameters(adapter.SelectCommand);
                         adapter.Fill(dataTable);
+                        adapter.Dispose();
                     }
                 }
                 catch (Exception ex)
@@ -325,7 +372,7 @@ namespace SQLite3DB
                     if (textTitlesArray != null) // Add null check for textTitlesArray
                     {
                         queryWhereBuilder.Append($"TextTitle IN (");
-                        for ( int i = 0; i < textTitlesArray.Length; i++)
+                        for (int i = 0; i < textTitlesArray.Length; i++)
                         {
                             queryWhereBuilder.Append($"@p{i},");
                         }
@@ -371,7 +418,7 @@ namespace SQLite3DB
         }
 
 
-        private void AddParameters(SQLiteCommand cmd)
+        private void AddParameters(SqliteCommand cmd)
         {
             if (inputData == null)
             {

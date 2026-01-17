@@ -1,6 +1,6 @@
 ﻿
 using System.Data;
-using SQLite3DB;
+using Sqlite3DB;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -18,7 +18,7 @@ namespace FloraReview
         private int pageIndex = 0;
         private readonly int pageSize = 50;
         private int totalPages = 0;
-        private readonly SQLite3db? db;
+        private readonly Sqlite3db? db;
 
         public Form2(Dictionary<string, string?> inputdata)
         {
@@ -29,7 +29,7 @@ namespace FloraReview
                 throw new ArgumentException("Invalid user name provided.");
             }
             inputData = inputdata;
-            db = new SQLite3db(inputData);
+            db = new Sqlite3db(inputData);
             Refresh();
         }
 

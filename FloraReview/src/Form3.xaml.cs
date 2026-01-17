@@ -4,7 +4,7 @@ using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Data;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -12,7 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Collections;
 using System.Text.RegularExpressions;
-using SQLite3DB;
+using Sqlite3DB;
 
 namespace FloraReview
 {
@@ -42,7 +42,7 @@ namespace FloraReview
         private string? currentRowId;
         private string? currentComment;
         private string? currentStatus;
-        private readonly SQLite3db? db;
+        private readonly Sqlite3db? db;
 
 
         private FindDialog? findDialog;
@@ -52,7 +52,7 @@ namespace FloraReview
 
 
 
-        public Form3(SQLite3db? adb, List<DataRow> selectedRows, string? aUser)
+        public Form3(Sqlite3db? adb, List<DataRow> selectedRows, string? aUser)
         {
             InitializeComponent();
             db = adb;

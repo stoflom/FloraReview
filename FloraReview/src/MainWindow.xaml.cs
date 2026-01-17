@@ -4,12 +4,12 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
 using System.Text.Json;
-using SQLite3DB;
+using Sqlite3DB;
 using System.Data.Common;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using System.Reflection;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 
 namespace FloraReview
 {
@@ -133,7 +133,7 @@ namespace FloraReview
         {
             OpenFileDialog openFileDialog = new()
             {
-                Filter = "SQLite Database (*.db)|*.db"
+                Filter = "Sqlite Database (*.db)|*.db"
             };
             if (openFileDialog.ShowDialog() == true)
             {
@@ -245,7 +245,7 @@ namespace FloraReview
                         if (inputData.TryGetValue("dbPath", out string? connectionString) && !string.IsNullOrEmpty(connectionString))
                         {
                             string filePath = saveFileDialog.FileName;
-                            SQLite3db db = new(connectionString);
+                            Sqlite3db db = new(connectionString);
                             await Task.Run(() => db.ExportFullTable(filePath));
                             db.Dispose();
                             MessageBox.Show($"Data successfully exported to {filePath}");
